@@ -3,7 +3,6 @@ package main
 import "fmt"
 
 func main() {
-	println("world")
 	print(1, "2")
 	print(int64(2), "3")
 }
