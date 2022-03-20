@@ -1,17 +1,8 @@
 package main
 
-import "fmt"
+import "vending/t1"
 
 func main() {
-	print(1, "2")
-	print(int64(2), "3")
+	t1.Start()
 }
 
-// 定义约束
-type Integer interface {
-	~int | ~int32 | ~int64
-}
-
-func print[I Integer, V string](i I, v V) {
-	fmt.Println(i, v)
-}
