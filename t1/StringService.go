@@ -10,20 +10,20 @@ type StringService interface {
 	Count(string) int
 }
 
-type stringService struct {}
+type stringService struct{}
+
 var ErrEmpty = errors.New("empty string")
 
 func (stringService) Uppercase(s string) (string, error) {
-	if s == ""{
+	if s == "" {
 		return "", ErrEmpty
 	}
-	return strings.ToUpper(s),nil
+	return strings.ToUpper(s), nil
 }
 
 func (stringService) Count(s string) int {
 	return len(s)
 }
-
 
 type uppercaseRequest struct {
 	S string `json:"s"`
@@ -31,7 +31,7 @@ type uppercaseRequest struct {
 
 type uppercaseResponse struct {
 	V   string `json:"v"`
-	Err string `json:"err,omitempty"` // errors don't JSON-marshal, so we use a string
+	Err string `json:"err,omitempty"`
 }
 
 type countRequest struct {

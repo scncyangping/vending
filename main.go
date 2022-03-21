@@ -1,11 +1,15 @@
 package main
 
 import (
-	"fmt"
-	"vending/t1"
+	"context"
+	"vending/proto/example"
+
+	"google.golang.org/grpc"
 )
 
 func main() {
-	t1.Start()
-	fmt.Println("dev")
+	ctx := context.Background()
+	grpcServer := grpc.NewServer()
+
+	example.RunServer(ctx, grpcServer, "50011", nil)
 }
