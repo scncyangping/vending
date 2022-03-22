@@ -45,6 +45,7 @@ func Start() {
 
 	var svc StringService
 	svc = stringService{}
+	// TODO 改用endpoint.Middleware()
 	svc = proxyingMiddleware(context.Background(), *proxy, logger)(svc)
 	svc = loggingMiddleware(logger)(svc)
 	svc = instrumentingMiddleware(requestCount, requestLatency, countResult)(svc)
