@@ -10,6 +10,9 @@ type StringService interface {
 	Count(string) int
 }
 
+// ServiceMiddleware is a chainable behavior modifier for StringService.
+type ServiceMiddleware func(StringService) StringService
+
 type stringService struct{}
 
 var ErrEmpty = errors.New("empty string")
@@ -23,21 +26,4 @@ func (stringService) Uppercase(s string) (string, error) {
 
 func (stringService) Count(s string) int {
 	return len(s)
-}
-
-type uppercaseRequest struct {
-	S string `json:"s"`
-}
-
-type uppercaseResponse struct {
-	V   string `json:"v"`
-	Err string `json:"err,omitempty"`
-}
-
-type countRequest struct {
-	S string `json:"s"`
-}
-
-type countResponse struct {
-	V int `json:"v"`
 }
