@@ -131,6 +131,7 @@ func main() {
 				fmt.Printf("time: %d \n", end-start)
 				log.Fatalf("Failed to receive a note: %#v", err.Error())
 			}
+
 			fmt.Println("AI: %#s \n", in.Message)
 		}
 	}()
