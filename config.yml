@@ -1,0 +1,25 @@
+server:
+  name: codechain
+  port: 9069
+
+log:
+  dir: ../logs
+  console: true
+  level: debug
+
+redis:
+  host: 127.0.0.1:6379
+  password:
+  poolsize:
+
+mongo:
+  host: 127.0.01:27017
+  user: yangping
+  password: 123456
+  poolsize: 4096
+
+mysql:
+  dbName: test
+  host: 127.0.0.1:3306
+  user: root
+  password: root
