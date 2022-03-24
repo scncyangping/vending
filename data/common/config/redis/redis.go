@@ -14,7 +14,7 @@ var client *redis.Client
 var clusterClient *redis.ClusterClient
 
 // client for single
-func Init() error {
+func NewRedisClient() error {
 	var (
 		host         string
 		password     string
@@ -50,7 +50,7 @@ func Init() error {
 }
 
 // client for cluster
-func RedisInitForCluster() error {
+func NewRedisClusterClient() error {
 	var (
 		hosts          []string
 		password       string
