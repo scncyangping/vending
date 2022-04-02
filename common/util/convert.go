@@ -54,11 +54,11 @@ func StructCopy(DstStructPtr interface{}, SrcStructPtr interface{}) {
 	dstt := reflect.TypeOf(DstStructPtr)
 	if srct.Kind() != reflect.Ptr || dstt.Kind() != reflect.Ptr ||
 		srct.Elem().Kind() == reflect.Ptr || dstt.Elem().Kind() == reflect.Ptr {
-		log.Logger.Error("Fatal error:type of parameters must be Ptr of value")
+		log.Logger().Error("Fatal error:type of parameters must be Ptr of value")
 		return
 	}
 	if srcv.IsNil() || dstv.IsNil() {
-		log.Logger.Error("Fatal error:value of parameters should not be nil")
+		log.Logger().Error("Fatal error:value of parameters should not be nil")
 		return
 	}
 	srcV := srcv.Elem()

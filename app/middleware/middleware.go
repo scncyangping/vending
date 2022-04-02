@@ -28,11 +28,11 @@ func LogMiddleware() gin.HandlerFunc {
 		actionId = snowflake.NexIdStr()
 		data, err := ctx.GetRawData()
 		if err != nil {
-			log.Logger.Errorf("Visit Param Init Error %v", err)
+			log.Logger().Errorf("Visit Param Init Error %v", err)
 		}
 		ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 
-		log.Logger.Infof(
+		log.Logger().Infof(
 			"%s request %s [%s] from [%s]: %v",
 			ctx.Request.Method,
 			ctx.Request.RequestURI,

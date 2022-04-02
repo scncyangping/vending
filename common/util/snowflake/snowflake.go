@@ -36,7 +36,7 @@ func setMachineId(mid int64) {
 }
 
 func NexIdStr() string {
-	return string(NextId())
+	return strconv.FormatInt(NextId(), 10)
 }
 
 func NextId() int64 {

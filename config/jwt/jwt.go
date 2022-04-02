@@ -11,8 +11,8 @@ type Config struct {
 	JwtSecret     string `yaml:"jwtSecret"`
 	JwtExpireTime int    `yaml:"jwtExpireTime"`
 	Issuer        string `yaml:"issuer"`
-	Secret        []byte
-	JwtAuthKey    string `yaml jwtAuthKey`
+	Secret        []byte `yaml:"secret"`
+	JwtAuthKey    string `yaml:"jwtAuthKey"`
 }
 
 func New(c *Config) {
@@ -24,7 +24,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-func GenerateToken(username, password string) (string, error) {
+func GenerateToken(username string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(time.Duration(config.JwtExpireTime) * time.Second)
 

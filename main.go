@@ -1,5 +1,8 @@
 package main
 
-func main() {
+import "vending/cmd"
 
+func main() {
+	//cmd.Execute()
+	cmd.Run()
 }

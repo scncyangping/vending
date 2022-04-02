@@ -10,6 +10,7 @@ import (
 	"syscall"
 	"time"
 	"vending/app/routes"
+	"vending/common/constants"
 	"vending/config"
 )
 
@@ -24,7 +25,7 @@ func run(mode string) {
 
 	}
 	srv := &http.Server{
-		Addr:    ":" + "8080",
+		Addr:    ":" + config.Base.Server.Port,
 		Handler: r,
 	}
 	go func() {
@@ -34,12 +35,7 @@ func run(mode string) {
 		}
 	}()
 
-	// Wait for interrupt signal to gracefully shutdown the server with
-	// a timeout of 5 seconds.
 	quit := make(chan os.Signal)
-	// kill (no param) default send syscanll.SIGTERM
-	// kill -2 is syscall.SIGINT
-	// kill -9 is syscall. SIGKILL but can"t be catch, so don't need add it
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 	log.Fatal("Shutdown Server ...")
@@ -49,10 +45,14 @@ func run(mode string) {
 	if err := srv.Shutdown(ctx); err != nil {
 		log.Fatalf("Server Shutdown: %v \n", err)
 	}
-	// catching ctx.Done(). timeout of 5 seconds.
 	select {
 	case <-ctx.Done():
 		log.Fatal("timeout of 10 seconds.")
 	}
 	log.Fatal("Server exiting")
+}
+
+// TODO 待移除
+func Run() {
+	run(constants.DebugMode)
 }

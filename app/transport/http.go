@@ -100,14 +100,14 @@ func SendSuccess(ctx *gin.Context, arg ...interface{}) {
 	case 1:
 		result = &Result{StatusOK, StatusText(StatusOK), arg[0]}
 	case 2:
-		result = &Result{arg[1].(int), StatusText(StatusOK), arg[0]}
+		result = &Result{arg[0].(int), arg[1].(string), nil}
 	case 3:
-		result = &Result{arg[1].(int), arg[2].(string), arg[0]}
+		result = &Result{arg[0].(int), arg[1].(string), arg[2]}
 	default:
 		panic("parameter error")
 	}
 
-	log.Logger.Infof("Response [%s] To Client: %v", actionId, result)
+	log.Logger().Infof("Response [%s] To Client: %v", actionId, result)
 	ctx.JSON(StatusOK, result)
 }
 
@@ -123,13 +123,13 @@ func SendFailure(ctx *gin.Context, arg ...interface{}) {
 	case 1:
 		result = &Result{StatusBadRequest, StatusText(StatusBadRequest), arg[0]}
 	case 2:
-		result = &Result{arg[1].(int), StatusText(StatusBadRequest), arg[0]}
+		result = &Result{arg[0].(int), arg[1].(string), nil}
 	case 3:
-		result = &Result{arg[1].(int), arg[2].(string), arg[0]}
+		result = &Result{arg[0].(int), arg[1].(string), arg[2]}
 	default:
 		panic("parameter error")
 	}
 
-	log.Logger.Infof("Response [%s] To Client: %v", actionId, result)
+	log.Logger().Infof("Response [%s] To Client: %v", actionId, result)
 	ctx.JSON(StatusOK, result)
 }

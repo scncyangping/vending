@@ -16,7 +16,7 @@ import (
 func Post(url string, json string) (resBody string, err error) {
 	res, err := http.Post(url, "application/x-www-form-urlencoded", strings.NewReader(json))
 	if err != nil {
-		log.Logger.Error("Post url error : %v", err)
+		log.Logger().Error("Post url error : %v", err)
 		return
 	}
 
@@ -24,7 +24,7 @@ func Post(url string, json string) (resBody string, err error) {
 	resBuff, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		log.Logger.Error("Read post url res body error : %v", err)
+		log.Logger().Error("Read post url res body error : %v", err)
 		return
 	}
 
@@ -35,13 +35,13 @@ func Post(url string, json string) (resBody string, err error) {
 func PostForm(url string, json string, action, sessionId string) (resBody string, err error) {
 	res, err := http.PostForm(url, neturl.Values{"action": {action}, "data": {json}, "sessionId": {sessionId}})
 	if err != nil {
-		log.Logger.Error("Post url error : %v", err)
+		log.Logger().Error("Post url error : %v", err)
 		return
 	}
 	defer res.Body.Close()
 	resBuff, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Logger.Error("Read post url res body error : %v", err)
+		log.Logger().Error("Read post url res body error : %v", err)
 		return
 	}
 
@@ -56,13 +56,13 @@ func PostFile(url string, filename string, botId string) (resBody string) {
 	fileWriter, err := bodyWriter.CreateFormFile("file", filename)
 
 	if err != nil {
-		log.Logger.Error("Get file writer error : %v", err)
+		log.Logger().Error("Get file writer error : %v", err)
 		return
 	}
 
 	fh, err := os.Open(filename)
 	if err != nil {
-		log.Logger.Error("error opening file : %v", err)
+		log.Logger().Error("error opening file : %v", err)
 		return
 	}
 
@@ -79,7 +79,7 @@ func PostFile(url string, filename string, botId string) (resBody string) {
 	resBuffer, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		log.Logger.Error("Read file post url res body error : %v", err)
+		log.Logger().Error("Read file post url res body error : %v", err)
 		return
 	}
 
@@ -91,7 +91,7 @@ func Get(url string) (resBody string) {
 	res, err := http.Get(url)
 
 	if err != nil {
-		log.Logger.Error("Get url error : %v", err)
+		log.Logger().Error("Get url error : %v", err)
 		return
 	}
 
@@ -99,7 +99,7 @@ func Get(url string) (resBody string) {
 	resBuff, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		log.Logger.Error("Read post url res body error : %v", err)
+		log.Logger().Error("Read post url res body error : %v", err)
 		return
 	}
 
@@ -112,7 +112,7 @@ func Put(url string, json string) (resBody string) {
 
 	req, err := http.NewRequest(http.MethodPut, url, strings.NewReader(json))
 	if err != nil {
-		log.Logger.Error("Put url error : %v", err)
+		log.Logger().Error("Put url error : %v", err)
 		return
 	}
 
@@ -122,7 +122,7 @@ func Put(url string, json string) (resBody string) {
 	resBuff, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		log.Logger.Error("Read put url res body error : %v", err)
+		log.Logger().Error("Read put url res body error : %v", err)
 		return
 	}
 
@@ -135,7 +135,7 @@ func Delete(url string) (resBody string) {
 
 	req, err := http.NewRequest(http.MethodDelete, url, nil)
 	if err != nil {
-		log.Logger.Error("Delete url error : %v", err)
+		log.Logger().Error("Delete url error : %v", err)
 		return
 	}
 
@@ -145,7 +145,7 @@ func Delete(url string) (resBody string) {
 	resBuff, err := ioutil.ReadAll(resp.Body)
 
 	if err != nil {
-		log.Logger.Error("Read delete url res body error : %v", err)
+		log.Logger().Error("Read delete url res body error : %v", err)
 		return
 	}
 
@@ -156,13 +156,13 @@ func Delete(url string) (resBody string) {
 func PostFormV(url string, v neturl.Values) (resBody string, err error) {
 	res, err := http.PostForm(url, v)
 	if err != nil {
-		log.Logger.Error("Post url error : %v", err)
+		log.Logger().Error("Post url error : %v", err)
 		return
 	}
 	defer res.Body.Close()
 	resBuff, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		log.Logger.Error("Read post url res body error : %v", err)
+		log.Logger().Error("Read post url res body error : %v", err)
 		return
 	}
 
@@ -173,14 +173,14 @@ func PostFormV(url string, v neturl.Values) (resBody string, err error) {
 func PostByType(url, json, cType string) (resBody string, err error) {
 	res, err := http.Post(url, cType, strings.NewReader(json))
 	if err != nil {
-		log.Logger.Error("Post url error : %v", err)
+		log.Logger().Error("Post url error : %v", err)
 		return
 	}
 	defer res.Body.Close()
 	resBuff, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		log.Logger.Error("Read post url res body error : %v", err)
+		log.Logger().Error("Read post url res body error : %v", err)
 		return
 	}
 	resBody = string(resBuff)
@@ -191,7 +191,7 @@ func PostR(url, cType string, sendData map[string]interface{}) (map[string]inter
 	// 转换参数
 	fData, error := json.Marshal(sendData)
 	if error != nil {
-		log.Logger.Info("json.Marshal Error: ", error, "data: ", sendData)
+		log.Logger().Info("json.Marshal Error: ", error, "data: ", sendData)
 		return nil, error
 	}
 	dataString := string(fData)
@@ -199,14 +199,14 @@ func PostR(url, cType string, sendData map[string]interface{}) (map[string]inter
 	// 发送请求
 	res, err := http.Post(url, cType, strings.NewReader(dataString))
 	if err != nil {
-		log.Logger.Error("Post url error : %v", err)
+		log.Logger().Error("Post url error : %v", err)
 		return nil, err
 	}
 	defer res.Body.Close()
 	resBuff, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		log.Logger.Error("Read post url res body error : %v", err)
+		log.Logger().Error("Read post url res body error : %v", err)
 		return nil, err
 	}
 	resBody := string(resBuff)
@@ -215,11 +215,11 @@ func PostR(url, cType string, sendData map[string]interface{}) (map[string]inter
 
 	error = json.Unmarshal([]byte(resBody), &dat)
 	if error != nil {
-		log.Logger.Info("json.Unmarshal Error: %v", resBody)
+		log.Logger().Info("json.Unmarshal Error: %v", resBody)
 		return nil, error
 	}
 
-	log.Logger.Info("Post url :", url, "result json : ", dat)
+	log.Logger().Info("Post url :", url, "result json : ", dat)
 
 	return dat, nil
 }
