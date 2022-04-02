@@ -1,0 +1,2 @@
+{"level":"warn","ts":1648544170300,"caller":"log/log_test.go:28","msg":"warn log 3{level 15 0 {\"a\":\"4\",\"b\":\"5\"} <nil>}"}
+{"level":"warn","ts":1648561388600,"caller":"log/log_test.go:28","msg":"warn log 3{level 15 0 {\"a\":\"4\",\"b\":\"5\"} <nil>}"}

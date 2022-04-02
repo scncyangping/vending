@@ -1,0 +1,2 @@
+{"level":"debug","ts":1648544170300,"caller":"log/log_test.go:26","msg":"debug log 1{line 11 47  <nil>}"}
+{"level":"debug","ts":1648561388599,"caller":"log/log_test.go:26","msg":"debug log 1{line 11 47  <nil>}"}
