@@ -1,4 +1,0 @@
-{"level":"info","ts":1648544169298,"caller":"log/zaplog.go:81","msg":"[NewLogger] success"}
-{"level":"info","ts":1648544170300,"caller":"log/log_test.go:27","msg":"Info log 2{level 15 0 1231231231 <nil>}"}
-{"level":"info","ts":1648561387593,"caller":"log/zaplog.go:81","msg":"[NewLogger] success"}
-{"level":"info","ts":1648561388600,"caller":"log/log_test.go:27","msg":"Info log 2{level 15 0 1231231231 <nil>}"}
