@@ -15,6 +15,7 @@ import (
 )
 
 func init() {
+	//  TODO 默认配置文件路径待修改
 	config.NewConfig("cmd/config.yml")
 }
 func run(mode string) {
