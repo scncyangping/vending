@@ -50,3 +50,7 @@ func (c *Config) new() *mongo.Client {
 	}
 	return client
 }
+
+func Do() {
+	conn.Database("").Collection("123")
+}
