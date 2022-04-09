@@ -21,9 +21,9 @@ redis:
   poolsize:
 
 mongo:
-  host: 127.0.01:27017
-  user: yangping
-  password: 123456
+  host: 139.9.0.61:17017
+  user:
+  password:
   poolsize: 4096
   maxConnIdleTime: 6000
 

@@ -3,7 +3,7 @@ package business
 import (
 	"github.com/gin-gonic/gin"
 	"time"
-	"vending/app/handler/business"
+	auth3 "vending/app/handler/auth"
 	"vending/app/middleware"
 )
 
@@ -23,13 +23,13 @@ func InitBusinessRoute(router *gin.RouterGroup) {
 }
 
 func auth(router *gin.RouterGroup) {
-	auth := business.AuthController{}
+	auth := auth3.AuthController{}
 	router.Use(middleware.RateLimitMiddleware(1*time.Second, 1, 1))
 	router.POST("/token", auth.Login)
 }
 
 func user(router *gin.RouterGroup) {
-	c := business.UserController{}
+	c := auth3.UserController{}
 	router.Use(middleware.RateLimitMiddleware(1*time.Second, 3, 1))
 	router.POST("/who", c.WhoIam)
 }

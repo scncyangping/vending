@@ -35,11 +35,11 @@ func setMachineId(mid int64) {
 	machineID = mid << 12
 }
 
-func NexIdStr() string {
-	return strconv.FormatInt(NextId(), 10)
+func NextId() string {
+	return strconv.FormatInt(nexId(), 10)
 }
 
-func NextId() int64 {
+func nexId() int64 {
 	curTimeStamp := time.Now().UnixNano() / 1000000
 	// 同一毫秒
 	if curTimeStamp == lastTimeStamp {

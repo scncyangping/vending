@@ -2,8 +2,8 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"log"
@@ -11,11 +11,13 @@ import (
 )
 
 const (
-	defaultDb  = ""
-	defaultCol = ""
+	defaultDb  = "vending"
+	defaultUri = "mongodb://%s"
 )
 
 var conn *mongo.Client
+
+type B bson.M
 
 type Config struct {
 	Host            string
@@ -26,21 +28,22 @@ type Config struct {
 	MaxConnIdleTime int `yaml:"maxConnIdleTime"`
 }
 
-func New(c *Config) {
+func Init(c *Config) {
 	if conn == nil {
-		c.new()
+		conn = c.new()
 	}
 }
 
+// Conn 提供连接
 func Conn() *mongo.Client {
 	return conn
 }
 
 func (c *Config) new() *mongo.Client {
-	opt := options.Client().ApplyURI(c.Host)
+	opt := options.Client().ApplyURI(fmt.Sprintf(defaultUri, c.Host))
 	if len(c.User) != 0 { // 部分连接不需要帐号密码
 		opt.Auth = &options.Credential{
-			Username: c.Host,
+			Username: c.User,
 			Password: c.Password,
 		}
 	}
@@ -71,14 +74,14 @@ func Op(database, collection string) *mgo {
 	}
 }
 
-func OpD() *mgo {
+func OpCn(defaultCol string) *mgo {
 	return &mgo{
 		defaultDb,
 		defaultCol,
 	}
 }
 
-//插入单个文档
+// InsertOne 插入单个文档
 func (m *mgo) InsertOne(value interface{}) string {
 	client := Conn()
 	collection := client.Database(m.database).Collection(m.collection)
@@ -86,46 +89,54 @@ func (m *mgo) InsertOne(value interface{}) string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return insertResult.InsertedID.(primitive.ObjectID).Hex()
+	return insertResult.InsertedID.(string)
 }
 
-//插入多个文档
-func (m *mgo) InsertMany(values []interface{}) *mongo.InsertManyResult {
+// InsertMany 插入多个文档
+func (m *mgo) InsertMany(values []interface{}) int {
 	client := Conn()
 	collection := client.Database(m.database).Collection(m.collection)
 	result, err := collection.InsertMany(context.TODO(), values)
 	if err != nil {
 		log.Fatal(err)
 	}
-	return result
+	return len(result.InsertedIDs)
 }
 
-//删除文档
-func (m *mgo) Delete(key string, value interface{}) int64 {
+// Delete 删除
+func (m *mgo) Delete(b interface{}) int64 {
 	client := Conn()
 	collection := client.Database(m.database).Collection(m.collection)
-	filter := bson.D{{key, value}}
-	count, err := collection.DeleteOne(context.TODO(), filter, nil)
+	count, err := collection.DeleteMany(context.TODO(), b)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return count.DeletedCount
 }
 
-//删除多个文档
-func (m *mgo) DeleteMany(key string, value interface{}) int64 {
+// DeleteOne 删除满足条件的一条数据
+func (m *mgo) DeleteOne(filter interface{}) int64 {
 	client := Conn()
 	collection := client.Database(m.database).Collection(m.collection)
-	filter := bson.D{{key, value}}
-
-	count, err := collection.DeleteMany(context.TODO(), filter)
+	count, err := collection.DeleteOne(context.TODO(), filter)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return count.DeletedCount
 }
 
-//更新单个文档
+// Update 更新文档
+func (m *mgo) Update(filter, update B) int64 {
+	client := Conn()
+	collection := client.Database(m.database).Collection(m.collection)
+	result, err := collection.UpdateMany(context.TODO(), filter, update)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return result.UpsertedCount
+}
+
+// UpdateOne 更新单个文档
 func (m *mgo) UpdateOne(filter, update interface{}) int64 {
 	client := Conn()
 	collection := client.Database(m.database).Collection(m.collection)
@@ -136,68 +147,44 @@ func (m *mgo) UpdateOne(filter, update interface{}) int64 {
 	return result.UpsertedCount
 }
 
-//更新多个文档
-func (m *mgo) UpdateMany(filter, update interface{}) int64 {
-	client := Conn()
-	collection := client.Database(m.database).Collection(m.collection)
-	result, err := collection.UpdateMany(context.TODO(), filter, update)
-	if err != nil {
-		log.Fatal(err)
-	}
-	return result.UpsertedCount
-}
-
-// 查询单个文档
-func (m *mgo) FindOne(key string, value interface{}) *mongo.SingleResult {
+// FindOne 查询单个文档
+func (m *mgo) FindOne(b interface{}) *mongo.SingleResult {
 	client := Conn()
 	collection, e := client.Database(m.database).Collection(m.collection).Clone()
 	if e != nil {
 		log.Fatal(e)
 	}
-	filter := bson.D{{key, value}}
-	singleResult := collection.FindOne(context.TODO(), filter)
+	singleResult := collection.FindOne(context.TODO(), b)
 	return singleResult
 }
 
-//查询多个文档
-func (m *mgo) FindMany(filter interface{}) (*mongo.Cursor, error) {
+// Find 查询文档
+func (m *mgo) Find(filter interface{}) *mongo.Cursor {
 	client := Conn()
 	collection, e := client.Database(m.database).Collection(m.collection).Clone()
 	if e != nil {
 		log.Fatal(e)
 	}
-	return collection.Find(context.TODO(), filter)
+	cursor, _ := collection.Find(context.TODO(), filter)
+	return cursor
 }
 
-//多条件查询
-func (m *mgo) FindManyByFilters(filter interface{}) (*mongo.Cursor, error) {
-	client := Conn()
-	collection, e := client.Database(m.database).Collection(m.collection).Clone()
-	if e != nil {
-		log.Fatal(e)
-	}
-	return collection.Find(context.TODO(), bson.M{"$and": filter})
-}
-
-//查询集合里有多少数据
-func (m *mgo) CollectionCount() (string, int64) {
+// Count 查询集合里有多少数据
+func (m *mgo) Count() int64 {
 	client := Conn()
 	collection := client.Database(m.database).Collection(m.collection)
-	name := collection.Name()
 	size, _ := collection.EstimatedDocumentCount(context.TODO())
-	return name, size
+	return size
 }
 
-//按选项查询集合
+// FindBy 按选项查询集合
 // Skip 跳过
 // Limit 读取数量
 // sort 1 ，-1 . 1 为升序 ， -1 为降序
-func (m *mgo) CollectionDocuments(Skip, Limit int64, sort int, key string, value interface{}) *mongo.Cursor {
+func (m *mgo) FindBy(skip, limit int64, sort, filter interface{}) *mongo.Cursor {
 	client := Conn()
 	collection := client.Database(m.database).Collection(m.collection)
-	SORT := bson.D{{"_id", sort}}
-	filter := bson.D{{key, value}}
-	findOptions := options.Find().SetSort(SORT).SetLimit(Limit).SetSkip(Skip)
+	findOptions := options.Find().SetSort(sort).SetLimit(limit).SetSkip(skip)
 	temp, _ := collection.Find(context.Background(), filter, findOptions)
 	return temp
 }
