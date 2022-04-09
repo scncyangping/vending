@@ -10,6 +10,11 @@ import (
 	"time"
 )
 
+const (
+	defaultDb  = ""
+	defaultCol = ""
+)
+
 var conn *mongo.Client
 
 type Config struct {
@@ -63,6 +68,13 @@ func Op(database, collection string) *mgo {
 	return &mgo{
 		database,
 		collection,
+	}
+}
+
+func OpD() *mgo {
+	return &mgo{
+		defaultDb,
+		defaultCol,
 	}
 }
 
