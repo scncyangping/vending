@@ -7,6 +7,8 @@ type BaseAuthService interface {
 	Registry(ctx *gin.Context)
 	DeleteUser(ctx *gin.Context)
 	UpdateUser(ctx *gin.Context)
+	GetUser(ctx *gin.Context)
+	UserList(ctx *gin.Context)
 }
 
 //
