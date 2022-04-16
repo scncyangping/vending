@@ -25,7 +25,7 @@ func LogMiddleware() gin.HandlerFunc {
 		var (
 			actionId string
 		)
-		actionId = snowflake.NexIdStr()
+		actionId = snowflake.NextId()
 		data, err := ctx.GetRawData()
 		if err != nil {
 			log.Logger().Errorf("Visit Param Init Error %v", err)
