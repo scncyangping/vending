@@ -1,6 +1,6 @@
 package facotry
 
-import "vending/app/ddd/domain/repo"
+import "vending/app/domain/repo"
 
 type AuthFactory struct {
 	repo repo.JwtRepo

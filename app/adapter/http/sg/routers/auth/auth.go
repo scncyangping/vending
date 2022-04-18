@@ -3,26 +3,25 @@ package auth
 import (
 	"github.com/gin-gonic/gin"
 	"time"
+	"vending/app/adapter/http/sg/routers"
 )
 
-func InitAuthRoute(router *gin.RouterGroup) {
+func c(router *gin.RouterGroup) {
 	authRouter := router.Group("/auth")
 	auth(authRouter)
 	// 鉴权中间件
-	router.Use(TokenAuthMiddleware())
+	router.Use(routers.TokenAuthMiddleware())
 	userRouter := router.Group("/user")
 
 	user(userRouter)
 }
 
 func auth(router *gin.RouterGroup) {
-	auth := auth3.AuthController{}
-	router.Use(RateLimitMiddleware(1*time.Second, 1, 1))
-	router.POST("/token", auth.Login)
+	router.Use(routers.RateLimitMiddleware(1*time.Second, 1, 1))
+	router.POST("/token", nil)
 }
 
 func user(router *gin.RouterGroup) {
-	c := auth3.UserController{}
-	router.Use(RateLimitMiddleware(1*time.Second, 3, 1))
-	router.POST("/who", c.WhoIam)
+	router.Use(routers.RateLimitMiddleware(1*time.Second, 3, 1))
+	router.POST("/who", nil)
 }

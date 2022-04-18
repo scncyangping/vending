@@ -1,6 +1,6 @@
 package entity
 
-import "vending/app/ddd/infrastructure/pkg/util/snowflake"
+import "vending/app/infrastructure/pkg/util/snowflake"
 
 type Id string
 

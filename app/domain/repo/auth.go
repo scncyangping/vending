@@ -1,12 +1,13 @@
 package repo
 
 import (
-	"vending/app/ddd/domain/dto"
-	"vending/app/ddd/infrastructure/pkg/tool"
+	"vending/app/domain/dto"
+	"vending/app/infrastructure/pkg/tool"
 )
 
 // AuthServiceRepo 接口定义
 type AuthServiceRepo interface {
+	JwtRepo
 }
 
 type JwtRepo interface {

@@ -6,10 +6,9 @@ import (
 	"github.com/juju/ratelimit"
 	"io/ioutil"
 	"time"
-	"vending/app/auth/infrastructure/jwt"
-	"vending/app/ddd/infrastructure/config"
-	"vending/app/ddd/infrastructure/pkg/util/snowflake"
-	"vending/app/ddd/types/constants"
+	"vending/app/infrastructure/config"
+	"vending/app/infrastructure/pkg/util/snowflake"
+	"vending/app/types/constants"
 )
 
 func LogMiddleware() gin.HandlerFunc {

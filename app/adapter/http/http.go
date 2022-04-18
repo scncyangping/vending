@@ -1,11 +1,11 @@
-package main
+package http
 
 import (
 	"github.com/gin-gonic/gin"
-	"vending/app/ddd/adapter/http/sg"
+	"vending/app/adapter/http/sg"
 )
 
-func main() {
+func NewHttp() {
 	httpGin := &sg.HttpGin{
 		Conf: &sg.ServerConf{
 			Addr:         "localhost:9079",

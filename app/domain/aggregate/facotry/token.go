@@ -1,9 +1,9 @@
 package facotry
 
 import (
-	"vending/app/ddd/domain/aggregate"
-	"vending/app/ddd/domain/entity"
-	"vending/app/ddd/domain/repo"
+	"vending/app/domain/aggregate"
+	"vending/app/domain/entity"
+	"vending/app/domain/repo"
 )
 
 type TokenFactory struct {
