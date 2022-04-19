@@ -1,17 +1,31 @@
-package routers
+package handlers
 
 import (
 	"bytes"
 	"github.com/gin-gonic/gin"
 	"github.com/juju/ratelimit"
+	"go.uber.org/zap"
 	"io/ioutil"
 	"time"
 	"vending/app/infrastructure/config"
+	"vending/app/infrastructure/pkg/log"
+	"vending/app/infrastructure/pkg/tool"
 	"vending/app/infrastructure/pkg/util/snowflake"
 	"vending/app/types/constants"
 )
 
-func LogMiddleware() gin.HandlerFunc {
+// Handler 具体业务服务聚合
+type Handler struct {
+	Logger *zap.SugaredLogger
+}
+
+func NewHandler() *Handler {
+	return &Handler{
+		Logger: log.Logger(),
+	}
+}
+
+func (h *Handler) LogMiddleware() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		var (
 			actionId string
@@ -19,28 +33,27 @@ func LogMiddleware() gin.HandlerFunc {
 		actionId = snowflake.NextId()
 		data, err := ctx.GetRawData()
 		if err != nil {
-			log.Logger().Errorf("Visit Param Init Error %v", err)
+			h.Logger.Errorf("Visit Param Init Error %v", err)
 		}
 		ctx.Request.Body = ioutil.NopCloser(bytes.NewBuffer(data))
 
-		log.Logger().Infof(
+		h.Logger.Infof(
 			"%s request %s [%s] from [%s]: %v",
 			ctx.Request.Method,
 			ctx.Request.RequestURI,
 			actionId, ctx.ClientIP(),
-			data)
+			string(data))
 
 		ctx.Set("ActionId", actionId)
 		ctx.Next()
 	}
 }
 
-func TokenAuthMiddleware() gin.HandlerFunc {
+func (h *Handler) TokenAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var (
 			token   string
 			errFlag int
-			session = &jwt.Session{}
 		)
 		token = c.Request.FormValue(config.Base.Jwt.JwtAuthKey)
 		if token == constants.EmptyStr {
@@ -48,34 +61,33 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 		}
 		if token == constants.EmptyStr {
 			c.Abort()
-			transport.SendFailure(c, transport.RequestTokenNotFound, transport.StatusText(transport.RequestTokenNotFound))
+			h.SendFailure(c, RequestTokenNotFound, StatusText(RequestTokenNotFound))
 			return
 
 		}
-		if claims, err := jwt.ParseToken(token); err != nil {
-			errFlag = transport.RequestCheckTokenError
+		if claims, err := tool.ParseToken(token); err != nil {
+			errFlag = RequestCheckTokenError
 		} else if time.Now().Unix() > claims.ExpiresAt {
-			errFlag = transport.RequestCheckTokenTimeOut
+			errFlag = RequestCheckTokenTimeOut
 		} else {
 			// 设置登录信息到token里面
-			session.UserName = claims.Username
-			c.Set("Session", session)
+			c.Set("username", claims.Username)
 		}
 		if errFlag > constants.ZERO {
 			c.Abort()
-			transport.SendFailure(c, errFlag, transport.StatusText(errFlag))
+			h.SendFailure(c, errFlag, StatusText(errFlag))
 			return
 		}
 		c.Next()
 	}
 }
 
-func RateLimitMiddleware(fillInterval time.Duration, cap, quantum int64) gin.HandlerFunc {
+func (h *Handler) RateLimitMiddleware(fillInterval time.Duration, cap, quantum int64) gin.HandlerFunc {
 	bucket := ratelimit.NewBucketWithQuantum(fillInterval, cap, quantum)
 	return func(c *gin.Context) {
 		if bucket.TakeAvailable(1) < 1 {
 			c.Abort()
-			transport.SendFailure(c, transport.RateLimit, transport.StatusText(transport.RateLimit))
+			h.SendFailure(c, RateLimit, StatusText(RateLimit))
 			return
 		}
 		c.Next()

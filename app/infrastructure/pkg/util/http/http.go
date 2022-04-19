@@ -10,7 +10,7 @@ import (
 	neturl "net/url"
 	"os"
 	"strings"
-	"vending/config/log"
+	"vending/app/infrastructure/pkg/log"
 )
 
 func Post(url string, json string) (resBody string, err error) {

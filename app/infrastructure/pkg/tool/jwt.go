@@ -3,11 +3,12 @@ package tool
 import (
 	"github.com/dgrijalva/jwt-go"
 	"time"
+	"vending/app/domain/obj"
 )
 
-var config *Config
+var config *JwtConfig
 
-type Config struct {
+type JwtConfig struct {
 	JwtSecret     string `yaml:"jwtSecret"`
 	JwtExpireTime int    `yaml:"jwtExpireTime"`
 	Issuer        string `yaml:"issuer"`
@@ -15,22 +16,17 @@ type Config struct {
 	JwtAuthKey    string `yaml:"jwtAuthKey"`
 }
 
-func New(c *Config) {
+func NewJwt(c *JwtConfig) {
 	config = c
 }
 
-type Claims struct {
-	Username string `json:"username"`
-	jwt.StandardClaims
-}
-
-func GenerateToken(username string) (string, error) {
+func GenerateToken(t obj.JwtToken) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(time.Duration(config.JwtExpireTime) * time.Second)
 
-	claims := Claims{
-		username,
-		jwt.StandardClaims{
+	claims := obj.Claims{
+		JwtToken: t,
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    config.Issuer,
 		},
@@ -42,16 +38,16 @@ func GenerateToken(username string) (string, error) {
 	return token, err
 }
 
-func ParseToken(token string) (*Claims, error) {
+func ParseToken(token string) (*obj.Claims, error) {
 	// 用于解析鉴权的声明，方法内部主要是具体的解码和校验的过程，最终返回*Token
-	tokenClaims, err := jwt.ParseWithClaims(token, &Claims{}, func(token *jwt.Token) (interface{}, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &obj.Claims{}, func(token *jwt.Token) (interface{}, error) {
 		return config.Secret, nil
 	})
 
 	if tokenClaims != nil {
 		// 验证基于时间的声明exp, iat, nbf，注意如果没有任何声明在令牌中
 		// 仍然会被认为是有效的。并且对于时区偏差没有计算方法
-		if claims, ok := tokenClaims.Claims.(*Claims); ok && tokenClaims.Valid {
+		if claims, ok := tokenClaims.Claims.(*obj.Claims); ok && tokenClaims.Valid {
 			return claims, nil
 		}
 	}

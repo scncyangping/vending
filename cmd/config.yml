@@ -1,6 +1,7 @@
 server:
-  name: vending
-  port: 9069
+  addr: :8080
+  readTimeout: 10000
+  writeTimeout: 10000
 
 log:
   logFileDir: ./logs

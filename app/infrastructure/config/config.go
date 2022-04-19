@@ -3,12 +3,23 @@ package config
 import (
 	"gopkg.in/yaml.v3"
 	"io/ioutil"
-	"vending/app/auth/infrastructure/jwt"
+	"vending/app/infrastructure/pkg/database/mongo"
+	"vending/app/infrastructure/pkg/database/mysql"
+	"vending/app/infrastructure/pkg/database/redis"
+	zapLog "vending/app/infrastructure/pkg/log"
+	"vending/app/infrastructure/pkg/tool"
 )
 
 var (
 	Base *Config
 )
+
+// Server 系统配置
+type Server struct {
+	Addr         string `yaml:"addr"`
+	ReadTimeout  int    `yaml:"readTimeout"`
+	WriteTimeout int    `yaml:"writeTimeout"`
+}
 
 type Config struct {
 	// 服务配置
@@ -22,32 +33,44 @@ type Config struct {
 	// mysql配置
 	Mysql *mysql.Config
 	// jwt配置
-	Jwt *jwt.Config
+	Jwt *tool.JwtConfig
 }
 
-func NewConfig(filePath string) {
+func NewConfig(filePath string) *Config {
 	conf, err := ioutil.ReadFile(filePath)
 	if err != nil {
-		return
+		return nil
 	}
-	initYml(conf)
-}
-
-// 加载yml配置文件
-func initYml(byteArray []byte) {
-	err := yaml.Unmarshal(byteArray, &Base)
+	err = yaml.Unmarshal(conf, &Base)
 	if err != nil {
 		panic(err)
 	}
-	zapLog.New(Base.Log)
-	jwt.New(Base.Jwt)
-	//Base.Mongo.New()
-	//Base.Jwt.New()
-	//Base.Redis.New()
+	Base.initLog()
+	Base.initJwt()
+	return Base
 }
 
-// Server 系统配置
-type Server struct {
-	Name string
-	Port string
+func (c *Config) initLog() *Config {
+	zapLog.NewLogger(c.Log)
+	return c
+}
+
+func (c *Config) initJwt() *Config {
+	tool.NewJwt(c.Jwt)
+	return c
+}
+
+func (c *Config) InitMongo() *Config {
+	mongo.Init(c.Mongo)
+	return c
+}
+
+func (c *Config) InitMysql() *Config {
+	mysql.New(c.Mysql)
+	return c
+}
+
+func (c *Config) InitRedis() *Config {
+	redis.NewRedis(c.Redis)
+	return c
 }

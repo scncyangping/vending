@@ -1,21 +1,19 @@
-package http
+package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"vending/app/adapter/http/sg"
+	"vending/app/adapter/http/sg/routers"
+	"vending/app/infrastructure/config"
+	"vending/app/types/constants"
 )
 
-func NewHttp() {
-	httpGin := &sg.HttpGin{
-		Conf: &sg.ServerConf{
-			Addr:         "localhost:9079",
-			ReadTimeout:  10000,
-			WriteTimeout: 10000,
-		},
-	}
-	groups := []*sg.HttpRouteGroup{
-		sg.NewHttpRouteGroup("v1"),
-	}
+func NewHttp(path, mod string) {
+	config.NewConfig(path)
+	srv := sg.NewHttpGin(mod)
+	routers.InitRoute(srv.Engine)
+	srv.Start()
+}
 
-	httpGin.NewHttpGin(gin.DebugMode, groups...).Start()
+func main() {
+	NewHttp("/Users/yapi/WorkSpace/VscodeWorkSpace/vending/cmd/config.yml", constants.DebugMode)
 }

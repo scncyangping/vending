@@ -12,14 +12,14 @@ type repository struct {
 }
 
 type Repository struct {
-	AuthToken *AuthToken
 }
 
 func NewRepository(mgo *mongo.Client, r *redis.Client) *Repository {
-	var a = repository{mgo, r}
-	return &Repository{
-		&AuthToken{a},
-	}
+	//var a = repository{mgo, r}
+	//return &Repository{
+	//	&AuthToken{a},
+	//}
+	return nil
 }
 
 func (r *repository) Close() {

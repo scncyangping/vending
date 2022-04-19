@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	"vending/common/constants"
+	"vending/app/types/constants"
 )
 
 var rootCmd = &cobra.Command{

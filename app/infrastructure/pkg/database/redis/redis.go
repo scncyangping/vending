@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+var Client *RClient
+
 type RClient struct {
 	redis.Cmdable
 }
@@ -52,6 +54,7 @@ func NewRedis(o *Config) (client *RClient, err error) {
 
 	client = new(RClient)
 	client.Cmdable = redisCli
+	Client = client
 	return client, nil
 }
 

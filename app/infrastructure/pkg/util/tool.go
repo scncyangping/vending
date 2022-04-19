@@ -8,7 +8,7 @@ import (
 )
 
 func QuitSignal(quitFunc func()) {
-	c := make(chan os.Signal, 1)
+	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 	fmt.Printf("server start success pid:%d\n", os.Getpid())
 	for s := range c {
