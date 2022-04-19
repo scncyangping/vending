@@ -25,16 +25,6 @@ func NewHttpGin(mod string) *HttpGin {
 	return &HttpGin{Engine: g, Conf: config.Base.Server, Logger: log.Logger()}
 }
 
-func (e *HttpGin) BuildRoute(path string, gps ...func(*gin.RouterGroup)) *HttpGin {
-	if path == "" {
-		panic("path is empty!")
-	}
-	for _, v := range gps {
-		v(e.Engine.Group(path))
-	}
-	return e
-}
-
 func (e *HttpGin) Start() {
 	server := &http.Server{
 		Addr:           e.Conf.Addr,
