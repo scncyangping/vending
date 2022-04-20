@@ -3,15 +3,10 @@ package util
 import (
 	"encoding/json"
 	"reflect"
-	"vending/config/log"
+	"vending/app/infrastructure/pkg/log"
 )
 
-/**
- * 转换从redis获取的数据
- * @param   base {interface{}} 结构体参数
- * @returns d   {map[string]interface{}} 转换后的map
- */
-func ConvertStringToMap(base map[string]string) map[string]interface{} {
+func StringToMap(base map[string]string) map[string]interface{} {
 	resultMap := make(map[string]interface{})
 	for k, v := range base {
 		var dat map[string]interface{}
@@ -24,13 +19,7 @@ func ConvertStringToMap(base map[string]string) map[string]interface{} {
 	return resultMap
 }
 
-/**
- * 结构体转map
- * @param   obj {interface{}} 结构体参数
- * @returns d   {map[string]interface{}} 转换后的map
- * @returns err {error} 				 错误
- */
-func ConvertStructToMap(obj interface{}) (d map[string]interface{}, err error) {
+func StructToMap(obj interface{}) (d map[string]interface{}, err error) {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 
@@ -42,28 +31,23 @@ func ConvertStructToMap(obj interface{}) (d map[string]interface{}, err error) {
 	return
 }
 
-/**
- * date : 2019/5/7
- * author : yangping
- * desc : 结构体数据拷贝
- */
 func StructCopy(DstStructPtr interface{}, SrcStructPtr interface{}) {
-	srcv := reflect.ValueOf(SrcStructPtr)
-	dstv := reflect.ValueOf(DstStructPtr)
-	srct := reflect.TypeOf(SrcStructPtr)
-	dstt := reflect.TypeOf(DstStructPtr)
-	if srct.Kind() != reflect.Ptr || dstt.Kind() != reflect.Ptr ||
-		srct.Elem().Kind() == reflect.Ptr || dstt.Elem().Kind() == reflect.Ptr {
+	a := reflect.ValueOf(SrcStructPtr)
+	b := reflect.ValueOf(DstStructPtr)
+	c := reflect.TypeOf(SrcStructPtr)
+	d := reflect.TypeOf(DstStructPtr)
+	if c.Kind() != reflect.Ptr || d.Kind() != reflect.Ptr ||
+		c.Elem().Kind() == reflect.Ptr || d.Elem().Kind() == reflect.Ptr {
 		log.Logger().Error("Fatal error:type of parameters must be Ptr of value")
 		return
 	}
-	if srcv.IsNil() || dstv.IsNil() {
+	if a.IsNil() || b.IsNil() {
 		log.Logger().Error("Fatal error:value of parameters should not be nil")
 		return
 	}
-	srcV := srcv.Elem()
-	dstV := dstv.Elem()
-	fields := DeepFields(reflect.ValueOf(SrcStructPtr).Elem().Type())
+	srcV := a.Elem()
+	dstV := b.Elem()
+	fields := deepFields(reflect.ValueOf(SrcStructPtr).Elem().Type())
 	for _, v := range fields {
 		if v.Anonymous {
 			continue
@@ -90,13 +74,13 @@ func StructCopy(DstStructPtr interface{}, SrcStructPtr interface{}) {
 	return
 }
 
-func DeepFields(baseType reflect.Type) []reflect.StructField {
+func deepFields(baseType reflect.Type) []reflect.StructField {
 	var fields []reflect.StructField
 
 	for i := 0; i < baseType.NumField(); i++ {
 		v := baseType.Field(i)
 		if v.Anonymous && v.Type.Kind() == reflect.Struct {
-			fields = append(fields, DeepFields(v.Type)...)
+			fields = append(fields, deepFields(v.Type)...)
 		} else {
 			fields = append(fields, v)
 		}

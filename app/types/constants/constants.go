@@ -1,11 +1,11 @@
 package constants
 
+import "errors"
+
 const (
-	ZERO     = iota
-	EmptyStr = ""
-	// 默认页数
-	DefaultPage = 1
-	// 默认每页数量
+	ZERO            = iota
+	EmptyStr        = ""
+	DefaultPage     = 1
 	DefaultPageSize = 10
 
 	// DebugMode indicates sg mode is debug.
@@ -15,3 +15,5 @@ const (
 	// TestMode indicates sg mode is test.
 	TestMode = "test"
 )
+
+var ErrNoDocuments = errors.New("mongo: no documents in result")

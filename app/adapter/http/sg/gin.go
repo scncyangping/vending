@@ -38,7 +38,6 @@ func (e *HttpGin) Start() {
 	go func() {
 		if err := server.ListenAndServe(); err != nil {
 			e.Logger.Errorf("Vending Server Error! %s", e.Conf.Addr)
-			panic(err)
 		}
 	}()
 

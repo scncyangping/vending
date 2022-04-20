@@ -46,3 +46,15 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 func (h *AuthHandler) Who(ctx *gin.Context) {
 	h.SendSuccess(ctx, "I am A W")
 }
+
+func (h *AuthHandler) Register(ctx *gin.Context) {
+	var (
+		requestBody dto.UserRegisterRq
+	)
+	err := ctx.ShouldBind(&requestBody)
+	if err != nil {
+		h.SendFailure(ctx, handlers.ParameterConvertError, handlers.StatusText(handlers.ParameterConvertError))
+		return
+	}
+
+}

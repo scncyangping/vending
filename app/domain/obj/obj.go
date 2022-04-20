@@ -10,3 +10,8 @@ type Claims struct {
 	JwtToken
 	jwt.StandardClaims
 }
+
+type Permission struct {
+	Key  string `json:"key"`
+	Type string `json:"type"`
+}

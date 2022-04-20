@@ -1,11 +1,8 @@
 package mongo
 
 import (
-	"context"
 	"fmt"
 	"testing"
-	"vending/common/util"
-	"vending/common/util/snowflake"
 )
 
 var tConfig = &Config{
@@ -18,7 +15,7 @@ var tConfig = &Config{
 func TestMgo_InsertOne(t *testing.T) {
 	Init(tConfig)
 	OpCn("user").InsertOne(map[string]interface{}{
-		"_id":  snowflake.NextId(),
+		"_id":  "123",
 		"name": "name",
 		"age":  uint8(2),
 	})
@@ -29,10 +26,9 @@ func TestMgo_InsertMany(t *testing.T) {
 	arr := make([]interface{}, 0)
 	for i := 0; i < 5; i++ {
 		arr = append(arr, map[string]interface{}{
-			"_id":     snowflake.NextId(),
-			"name":    "name",
-			"age":     i,
-			"addTime": util.NowDateTimeFormat(),
+			"_id":  "123",
+			"name": "name",
+			"age":  i,
 		})
 	}
 	fmt.Println(OpCn("user").InsertMany(arr))
@@ -62,12 +58,18 @@ func TestMgo_Update(t *testing.T) {
 
 func TestMgo_FindOne(t *testing.T) {
 	Init(tConfig)
-	U := &User{}
-	//U := make(map[string]interface{})
-	OpCn("user").FindOne(map[string]interface{}{
-		"age": 2,
-	}).Decode(U)
+	//U := &User{}
+	var U *User
+	//U := new(User)
+	//U.Age = 1111
+	//(*U).Age = 2222
+	fmt.Println(&U)
 	fmt.Println(U)
+	//U := make(map[string]interface{})
+	e := OpCn("user").FindOne(map[string]interface{}{
+		"age": 3,
+	}, U)
+	fmt.Println(e)
 }
 
 type User struct {
@@ -79,11 +81,15 @@ type User struct {
 
 func TestMgo_Find(t *testing.T) {
 	Init(tConfig)
-	U := make([]*User, 0)
-	OpCn("user").Find(B{
-		"age": 0,
-	}).All(context.TODO(), &U)
-	fmt.Println(U)
+	//U := make([]User, 0)
+	U := new([]*User)
+	OpCn("user").Find(map[string]interface{}{
+		"age": 1,
+	}, U)
+	fmt.Printf("%v", U)
+	for _, v := range *U {
+		fmt.Println(v)
+	}
 }
 
 func TestMgo_Count(t *testing.T) {
@@ -93,9 +99,9 @@ func TestMgo_Count(t *testing.T) {
 
 func TestMgo_FindBy(t *testing.T) {
 	Init(tConfig)
-	uList := make([]User, 0)
+	var uList []*User
 	OpCn("user").FindBy(0, 2,
-		B{"age": 1},
-		B{"age": B{"$gte": 1}}).All(context.TODO(), &uList)
+		map[string]interface{}{"age": 1},
+		map[string]interface{}{"age": map[string]interface{}{"$gte": 1}}, &uList)
 	fmt.Println(uList)
 }
