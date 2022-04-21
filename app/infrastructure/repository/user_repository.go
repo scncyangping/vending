@@ -2,6 +2,7 @@ package repository
 
 import (
 	"vending/app/domain/entity"
+	"vending/app/domain/repo"
 	"vending/app/domain/vo"
 	"vending/app/infrastructure/converter"
 	"vending/app/infrastructure/do"
@@ -9,6 +10,8 @@ import (
 	"vending/app/infrastructure/pkg/log"
 	"vending/app/types"
 )
+
+var _ repo.UserRepo = (*UserRepository)(nil)
 
 type UserRepository struct {
 	mgo *mongo.MgoV
@@ -20,7 +23,7 @@ func NewUserRepository() *UserRepository {
 	}
 }
 
-func (u *UserRepository) CreateUser(entity *entity.UserEntity) string {
+func (u *UserRepository) SaveUser(entity *entity.UserEntity) string {
 	userDo := converter.ConvertUserE2UserD(entity)
 	return u.mgo.InsertOne(userDo)
 }

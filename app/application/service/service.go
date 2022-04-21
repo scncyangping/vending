@@ -2,6 +2,7 @@ package service
 
 import "vending/app/domain/dto"
 
-type UserService interface {
-	Register(rq dto.UserRegisterRq) error
+type AuthService interface {
+	AuthByJWT(dto.JwtAuthRe) dto.JwtAuthRp
+	Register(rq dto.UserRegisterRq) (error, string)
 }

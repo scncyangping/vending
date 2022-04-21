@@ -5,3 +5,9 @@ import (
 )
 
 type B bson.M
+
+type AuthenticationType string
+
+const (
+	JWT AuthenticationType = "JWT"
+)

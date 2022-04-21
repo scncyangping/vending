@@ -1,11 +1,11 @@
 package dto
 
-type LoginRe struct {
+type JwtAuthRe struct {
 	UserName string `json:"user_name"`
 	Pwd      string `json:"pwd"`
 }
 
-type LoginRp struct {
+type JwtAuthRp struct {
 	Token string `json:"token"`
 }
 

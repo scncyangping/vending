@@ -22,7 +22,7 @@ func NewAuthHandler() *AuthHandler {
 
 func (h *AuthHandler) Login(ctx *gin.Context) {
 	var (
-		requestBody dto.LoginRe
+		requestBody dto.AuthenticationRe
 	)
 	err := ctx.ShouldBind(&requestBody)
 	if err != nil {

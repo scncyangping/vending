@@ -6,7 +6,7 @@ import (
 )
 
 type UserRepo interface {
-	CreateUser(entity *entity.UserEntity) string
+	SaveUser(entity *entity.UserEntity) string
 	DeleteUser(string) error
 	GetUserById(string) *vo.UserVo
 	ListUserBy(map[string]interface{}) []*vo.UserVo

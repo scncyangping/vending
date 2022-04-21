@@ -1,14 +1,18 @@
 package service
 
 import (
+	"vending/app/domain/aggregate/facotry"
 	"vending/app/domain/dto"
-	"vending/app/domain/repo"
 )
 
-type UserSrvImp struct {
-	userRepo repo.UserRepo
+type AuthSrvImp struct {
+	*facotry.AuthFactory
 }
 
-func (u *UserSrvImp) CreateUser(rq dto.UserRegisterRq) error {
-	return
+func (a *AuthSrvImp) AuthByJWT(re dto.JwtAuthRe) dto.JwtAuthRp {
+	panic("implement me")
+}
+
+func (a *AuthSrvImp) Register(rq dto.UserRegisterRq) (error, string) {
+	panic("implement me")
 }

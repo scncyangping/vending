@@ -31,8 +31,8 @@ func Init(c *Config) {
 	}
 }
 
-// Conn 提供连接
-func Conn() *mongo.Client {
+// connect 提供连接
+func connect() *mongo.Client {
 	return conn
 }
 
@@ -89,7 +89,7 @@ func (m *MgoV) InsertOne(value interface{}) string {
 }
 
 func getCollection(m *MgoV) *mongo.Collection {
-	client := Conn()
+	client := connect()
 	collection := client.Database(m.database).Collection(m.collection)
 	return collection
 }
