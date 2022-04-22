@@ -1,8 +1,22 @@
 package service
 
-import "vending/app/domain/dto"
+import (
+	"vending/app/domain/dto"
+	"vending/app/domain/vo"
+)
 
-type AuthService interface {
-	AuthByJWT(dto.JwtAuthRe) dto.JwtAuthRp
-	Register(rq dto.UserRegisterRq) (error, string)
+type AuthSrv interface {
+	Login(*dto.LoginRe) (*vo.UserVo, error)
+	Register(*dto.RegisterRe) (string, error)
 }
+
+//
+//type SrvManager struct {
+//	AuthSrv
+//}
+//
+//func NewAuthSrvManager(srv service.Service) *SrvManager {
+//	return &SrvManager{
+//		AuthSrv: srv.UserSrv,
+//	}
+//}

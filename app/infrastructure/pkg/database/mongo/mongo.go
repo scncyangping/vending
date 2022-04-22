@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	"log"
 	"time"
 )
 
@@ -25,7 +24,7 @@ type Config struct {
 	MaxConnIdleTime int `yaml:"maxConnIdleTime"`
 }
 
-func Init(c *Config) {
+func New(c *Config) {
 	if conn == nil {
 		conn = c.new()
 	}
@@ -79,13 +78,15 @@ func OpCn(defaultCol string) *MgoV {
 }
 
 // InsertOne 插入单个文档
-func (m *MgoV) InsertOne(value interface{}) string {
+func (m *MgoV) InsertOne(value interface{}) (string, error) {
 	collection := getCollection(m)
-	insertResult, err := collection.InsertOne(context.TODO(), value)
-	if err != nil {
-		log.Fatal(err)
+
+	if insertResult, err := collection.InsertOne(context.TODO(), value); err != nil {
+		return "", err
+	} else {
+		return insertResult.InsertedID.(string), nil
 	}
-	return insertResult.InsertedID.(string)
+
 }
 
 func getCollection(m *MgoV) *mongo.Collection {
@@ -95,53 +96,53 @@ func getCollection(m *MgoV) *mongo.Collection {
 }
 
 // InsertMany 插入多个文档
-func (m *MgoV) InsertMany(values []interface{}) int {
+func (m *MgoV) InsertMany(values []interface{}) (int, error) {
 	collection := getCollection(m)
-	result, err := collection.InsertMany(context.TODO(), values)
-	if err != nil {
-		log.Fatal(err)
+	if result, err := collection.InsertMany(context.TODO(), values); err != nil {
+		return -1, err
+	} else {
+		return len(result.InsertedIDs), nil
 	}
-	return len(result.InsertedIDs)
 }
 
 // Delete 删除
-func (m *MgoV) Delete(b interface{}) int64 {
+func (m *MgoV) Delete(b interface{}) (int64, error) {
 	collection := getCollection(m)
-	count, err := collection.DeleteMany(context.TODO(), b)
-	if err != nil {
-		log.Fatal(err)
+	if count, err := collection.DeleteMany(context.TODO(), b); err != nil {
+		return -1, err
+	} else {
+		return count.DeletedCount, nil
 	}
-	return count.DeletedCount
 }
 
 // DeleteOne 删除满足条件的一条数据
-func (m *MgoV) DeleteOne(filter interface{}) int64 {
+func (m *MgoV) DeleteOne(filter interface{}) (int64, error) {
 	collection := getCollection(m)
-	count, err := collection.DeleteOne(context.TODO(), filter)
-	if err != nil {
-		log.Fatal(err)
+	if count, err := collection.DeleteOne(context.TODO(), filter); err != nil {
+		return -1, err
+	} else {
+		return count.DeletedCount, nil
 	}
-	return count.DeletedCount
 }
 
 // Update 更新文档
-func (m *MgoV) Update(filter, update interface{}) int64 {
+func (m *MgoV) Update(filter, update interface{}) (int64, error) {
 	collection := getCollection(m)
-	result, err := collection.UpdateMany(context.TODO(), filter, update)
-	if err != nil {
-		log.Fatal(err)
+	if result, err := collection.UpdateMany(context.TODO(), filter, update); err != nil {
+		return -1, err
+	} else {
+		return result.UpsertedCount, nil
 	}
-	return result.UpsertedCount
 }
 
 // UpdateOne 更新单个文档
-func (m *MgoV) UpdateOne(filter, update interface{}) int64 {
+func (m *MgoV) UpdateOne(filter, update interface{}) (int64, error) {
 	collection := getCollection(m)
-	result, err := collection.UpdateOne(context.TODO(), filter, update)
-	if err != nil {
-		log.Fatal(err)
+	if result, err := collection.UpdateOne(context.TODO(), filter, update); err != nil {
+		return -1, err
+	} else {
+		return result.UpsertedCount, nil
 	}
-	return result.UpsertedCount
 }
 
 // FindOne 查询单个文档
@@ -171,10 +172,8 @@ func (m *MgoV) Find(filter interface{}, tSlice interface{}) error {
 }
 
 // Count 查询集合里有多少数据
-func (m *MgoV) Count() int64 {
-	collection := getCollection(m)
-	size, _ := collection.EstimatedDocumentCount(context.TODO())
-	return size
+func (m *MgoV) Count() (int64, error) {
+	return getCollection(m).EstimatedDocumentCount(context.TODO())
 }
 
 // FindBy 按选项查询集合

@@ -1,4 +1,4 @@
-package tool
+package jwt
 
 import (
 	"github.com/dgrijalva/jwt-go"
@@ -6,9 +6,9 @@ import (
 	"vending/app/domain/obj"
 )
 
-var config *JwtConfig
+var config *Config
 
-type JwtConfig struct {
+type Config struct {
 	JwtSecret     string `yaml:"jwtSecret"`
 	JwtExpireTime int    `yaml:"jwtExpireTime"`
 	Issuer        string `yaml:"issuer"`
@@ -16,16 +16,16 @@ type JwtConfig struct {
 	JwtAuthKey    string `yaml:"jwtAuthKey"`
 }
 
-func NewJwt(c *JwtConfig) {
+func New(c *Config) {
 	config = c
 }
 
-func GenerateToken(t obj.JwtToken) (string, error) {
+func GenerateToken(name string) (string, error) {
 	nowTime := time.Now()
 	expireTime := nowTime.Add(time.Duration(config.JwtExpireTime) * time.Second)
 
 	claims := obj.Claims{
-		JwtToken: t,
+		JwtToken: obj.JwtToken{Username: name},
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: expireTime.Unix(),
 			Issuer:    config.Issuer,

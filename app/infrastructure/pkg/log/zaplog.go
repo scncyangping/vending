@@ -46,7 +46,7 @@ type ZapLogger struct {
 	initialized bool
 }
 
-func NewLogger(c *Config) {
+func New(c *Config) {
 	if logger == nil {
 		logger = c.newZapLogger().Sugar()
 	}

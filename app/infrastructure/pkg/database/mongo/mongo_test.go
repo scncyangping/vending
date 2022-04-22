@@ -59,7 +59,7 @@ func TestMgo_Update(t *testing.T) {
 func TestMgo_FindOne(t *testing.T) {
 	Init(tConfig)
 	//U := &User{}
-	var U *User
+	var U User
 	//U := new(User)
 	//U.Age = 1111
 	//(*U).Age = 2222
@@ -67,9 +67,11 @@ func TestMgo_FindOne(t *testing.T) {
 	fmt.Println(U)
 	//U := make(map[string]interface{})
 	e := OpCn("user").FindOne(map[string]interface{}{
-		"age": 3,
-	}, U)
+		"age": 1,
+	}, &U)
+	fmt.Println(U)
 	fmt.Println(e)
+
 }
 
 type User struct {

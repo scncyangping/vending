@@ -1,4 +1,4 @@
-package sg
+package server
 
 import (
 	"context"
@@ -9,9 +9,20 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"vending/app/adapter/http/handlers/business"
 	"vending/app/infrastructure/config"
 	"vending/app/infrastructure/pkg/log"
 )
+
+type Handlers struct {
+	*business.AuthHandler
+}
+
+func NewHandlers(b *business.AuthHandler) *Handlers {
+	return &Handlers{
+		AuthHandler: b,
+	}
+}
 
 type HttpGin struct {
 	Conf   *config.Server
@@ -49,7 +60,7 @@ func (e *HttpGin) Start() {
 
 	e.Logger.Errorf("Shutdown Server ...%s", e.Conf.Addr)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := server.Shutdown(ctx); err != nil {

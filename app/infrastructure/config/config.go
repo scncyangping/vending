@@ -1,13 +1,14 @@
 package config
 
 import (
-	"gopkg.in/yaml.v3"
-	"io/ioutil"
+	"flag"
+	"fmt"
+	"github.com/spf13/viper"
 	"vending/app/infrastructure/pkg/database/mongo"
 	"vending/app/infrastructure/pkg/database/mysql"
 	"vending/app/infrastructure/pkg/database/redis"
 	zapLog "vending/app/infrastructure/pkg/log"
-	"vending/app/infrastructure/pkg/tool"
+	"vending/app/infrastructure/pkg/util/jwt"
 )
 
 var (
@@ -33,44 +34,46 @@ type Config struct {
 	// mysql配置
 	Mysql *mysql.Config
 	// jwt配置
-	Jwt *tool.JwtConfig
+	Jwt *jwt.Config
 }
 
-func NewConfig(filePath string) *Config {
-	conf, err := ioutil.ReadFile(filePath)
-	if err != nil {
-		return nil
+var conf = flag.String("conf", "/Users/yapi/WorkSpace/GolandWorkSpace/Template/config.yml", "conf")
+
+func NewConfig() *Config {
+	var C Config
+	flag.Parse()
+	v := viper.New()
+	v.SetConfigFile(*conf)
+	if err := v.ReadInConfig(); err != nil {
+		panic(fmt.Sprintf("%v unmarshal ReadInConfig error", err))
 	}
-	err = yaml.Unmarshal(conf, &Base)
-	if err != nil {
-		panic(err)
+	if err := v.Unmarshal(&C); err != nil {
+		panic(fmt.Sprintf("%v unmarshal Unmarshal error", err))
 	}
-	Base.initLog()
-	Base.initJwt()
+	Base = &C
+
+	NewLog(Base)
+	NewJwt(Base)
+	NewMongo(Base)
 	return Base
 }
 
-func (c *Config) initLog() *Config {
-	zapLog.NewLogger(c.Log)
-	return c
+func NewLog(c *Config) {
+	zapLog.New(c.Log)
 }
 
-func (c *Config) initJwt() *Config {
-	tool.NewJwt(c.Jwt)
-	return c
+func NewJwt(c *Config) {
+	jwt.New(c.Jwt)
 }
 
-func (c *Config) InitMongo() *Config {
-	mongo.Init(c.Mongo)
-	return c
+func NewMongo(c *Config) {
+	mongo.New(c.Mongo)
 }
 
-func (c *Config) InitMysql() *Config {
+func NewMysql(c *Config) {
 	mysql.New(c.Mysql)
-	return c
 }
 
-func (c *Config) InitRedis() *Config {
-	redis.NewRedis(c.Redis)
-	return c
+func NewRedis(c *Config) {
+	redis.New(c.Redis)
 }

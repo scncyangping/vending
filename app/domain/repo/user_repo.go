@@ -2,13 +2,14 @@ package repo
 
 import (
 	"vending/app/domain/entity"
-	"vending/app/domain/vo"
+	"vending/app/infrastructure/do"
 )
 
 type UserRepo interface {
-	SaveUser(entity *entity.UserEntity) string
+	SaveUser(entity *entity.UserEn) (string, error)
 	DeleteUser(string) error
-	GetUserById(string) *vo.UserVo
-	ListUserBy(map[string]interface{}) []*vo.UserVo
-	ListUserPageBy(skip, limit int64, sort, filter interface{}) []*vo.UserVo
+	GetUserById(string) (*do.UserDo, error)
+	GetUserByName(string) (*do.UserDo, error)
+	ListUserBy(map[string]interface{}) ([]*do.UserDo, error)
+	ListUserPageBy(skip, limit int64, sort, filter interface{}) ([]*do.UserDo, error)
 }

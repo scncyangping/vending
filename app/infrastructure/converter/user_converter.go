@@ -7,7 +7,7 @@ import (
 	"vending/app/infrastructure/pkg/util"
 )
 
-func ConvertUserE2UserD(e *entity.UserEntity) (u *do.UserDo) {
+func ConvertUserE2UserD(e *entity.UserEn) (u *do.UserDo) {
 	util.StructCopy(u, e)
 	u.CreateTime = util.NowTimestamp()
 	u.UpdateTime = util.NowTimestamp()

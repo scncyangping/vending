@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 var rootCmd = &cobra.Command{
-	Short: "vending for test",
+	Short: "template for test",
 	Long: `命令行工具，现在仅提供对程序启动的操作，后续
 可添加对内存、日志等操作。`,
 	CompletionOptions: cobra.CompletionOptions{HiddenDefaultCmd: true},

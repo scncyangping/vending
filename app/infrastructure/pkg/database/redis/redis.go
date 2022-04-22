@@ -21,7 +21,7 @@ type Config struct {
 	WriteTimeout time.Duration `yaml:"WriteTimeout"`
 }
 
-func NewRedis(o *Config) (client *RClient, err error) {
+func New(o *Config) (client *RClient, err error) {
 	var redisCli redis.Cmdable
 	if len(o.Addr) > 1 {
 		redisCli = redis.NewClusterClient(

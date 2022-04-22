@@ -1,12 +1,26 @@
 package service
 
 import (
-	"vending/app/domain/dto"
-	"vending/app/domain/obj"
+	"vending/app/domain/entity"
+	"vending/app/domain/service/imp/auth"
+	"vending/app/domain/vo"
+	"vending/app/infrastructure/repository"
 )
 
-// AuthSrv Auth相关应单独抽离出来
-type AuthSrv interface {
-	GenerateToken(re *dto.JwtAuthTokenRe) (string, error)
-	ParseToken(string) (*obj.Claims, error)
+type AuthService interface {
+	LoginByName(name, pwd string) (*vo.UserVo, error)
+	Register(*entity.UserEn) (string, error)
+}
+
+type Service struct {
+	UserSrv *auth.UserServiceImpl
+}
+
+// NewService wire
+func NewService(repo *repository.Repository) *Service {
+	return &Service{
+		UserSrv: &auth.UserServiceImpl{
+			UserRepo: repo.UserRepo,
+		},
+	}
 }

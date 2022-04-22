@@ -9,7 +9,7 @@ import (
 	"time"
 	"vending/app/infrastructure/config"
 	"vending/app/infrastructure/pkg/log"
-	"vending/app/infrastructure/pkg/tool"
+	"vending/app/infrastructure/pkg/util/jwt"
 	"vending/app/infrastructure/pkg/util/snowflake"
 	"vending/app/types/constants"
 )
@@ -53,7 +53,7 @@ func (h *Handler) TokenAuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var (
 			token   string
-			errFlag int
+			errFlag ResultCode
 		)
 		token = c.Request.FormValue(config.Base.Jwt.JwtAuthKey)
 		if token == constants.EmptyStr {
@@ -65,7 +65,7 @@ func (h *Handler) TokenAuthMiddleware() gin.HandlerFunc {
 			return
 
 		}
-		if claims, err := tool.ParseToken(token); err != nil {
+		if claims, err := jwt.ParseToken(token); err != nil {
 			errFlag = RequestCheckTokenError
 		} else if time.Now().Unix() > claims.ExpiresAt {
 			errFlag = RequestCheckTokenTimeOut

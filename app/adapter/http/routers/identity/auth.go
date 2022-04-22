@@ -3,11 +3,10 @@ package identity
 import (
 	"github.com/gin-gonic/gin"
 	"time"
-	"vending/app/adapter/http/sg/handlers/indentity"
+	"vending/app/adapter/http/handlers/business"
 )
 
-func InitAuthRoute(router *gin.RouterGroup) {
-	handler := indentity.NewAuthHandler()
+func InitAuthRoute(router *gin.RouterGroup, handler *business.AuthHandler) {
 	authRouter := router.Group("/auth")
 	auth(authRouter, handler)
 	// 鉴权中间件
@@ -17,12 +16,14 @@ func InitAuthRoute(router *gin.RouterGroup) {
 	user(userRouter, handler)
 }
 
-func auth(router *gin.RouterGroup, handler *indentity.AuthHandler) {
+func auth(router *gin.RouterGroup, handler *business.AuthHandler) {
 	router.Use(handler.RateLimitMiddleware(1*time.Second, 1, 1))
 	router.POST("/login", handler.Login)
+	router.POST("/register", handler.Register)
+
 }
 
-func user(router *gin.RouterGroup, handler *indentity.AuthHandler) {
+func user(router *gin.RouterGroup, handler *business.AuthHandler) {
 	router.Use(handler.RateLimitMiddleware(1*time.Second, 3, 1))
-	router.POST("/who", handler.Who)
+	router.POST("/who", nil)
 }
