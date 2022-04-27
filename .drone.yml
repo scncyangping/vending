@@ -1,0 +1,55 @@
+kind: pipeline
+name: vending
+trigger:
+  branch:
+    - master
+  event:
+    - push
+volumes:
+  - name: go-cache
+    host:
+      path: /root/build/template/go/cache/
+steps:
+  - name: build
+    pull: if-not-exists
+    image: golang:1.17.7
+    volumes:
+      - name: go-cache
+        path: /go/pkg
+    commands:
+      - cd cmd
+      - go env -w GO111MODULE=on
+      - go env -w GOPROXY="https://goproxy.cn,direct"
+      - go version
+      # –tags netgo
+      - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o template .
+
+  - name: publish
+    image: plugins/docker:latest
+    settings:
+      username:
+        from_secret: docker_username
+      password:
+        from_secret: docker_password
+      auto_tag: true
+      repo: registry.cn-hangzhou.aliyuncs.com/scncyangping/vending
+      registry: registry.cn-hangzhou.aliyuncs.com
+  - name: deploy
+    image: appleboy/drone-ssh
+    pull: true
+    settings:
+      host:
+        from_secret: deploy_host
+      port: 22
+      command_timeout: 2m
+      username:
+        from_secret: deploy_username
+      password:
+        from_secret: deploy_password
+      script:
+        - docker pull registry.cn-hangzhou.aliyuncs.com/scncyangping/template
+        - docker stop template-ttt
+        - docker rm template-ttt
+        - echo "image running"
+        - docker run -p 9088:8080 -d --name template-ttt registry.cn-hangzhou.aliyuncs.com/scncyangping/template
+        - echo "run success"
