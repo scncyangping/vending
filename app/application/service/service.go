@@ -11,12 +11,14 @@ type AuthSrv interface {
 }
 
 type CommoditySrv interface {
-	// 上架商品
+	// Up 上架商品
 	Up([]string) error
-	// 下架商品
+	// Down 下架商品
 	Down([]string) error
-	// 导入商品
-	Import(string) (count int, err error)
+	// Delete 删除商品
+	Delete([]string) error
+	// Import 导入商品
+	Import(interface{}) (count int, err error)
 }
 
 type OrderSrv interface {
