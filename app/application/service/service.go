@@ -11,6 +11,7 @@ type AuthSrv interface {
 }
 
 type CommoditySrv interface {
+	Get(string) interface{}
 	// Up 上架商品
 	Up([]string) error
 	// Down 下架商品
