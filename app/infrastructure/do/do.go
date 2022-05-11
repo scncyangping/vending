@@ -32,14 +32,14 @@ type RoleDo struct {
 // CommodityDo 商品
 type CommodityDo struct {
 	Do
-	Name         string       `json:"name" bson:"name"`                 // 商品名称
-	Amount       float64      `json:"amount" bson:"amount"`             // 商品价格
-	Des          string       `json:"des" bson:"name"`                  // 描述
-	Introduction string       `json:"introduction" bson:"introduction"` // 简介
-	Type         uint8        `json:"type" bson:"type"`                 // 商品类型
-	ImageUrl     string       `json:"imageUrl" bson:"imageUrl"`         // 图片链接
-	Status       types.Status `json:"status" bson:"status"`
-	CategoryId   string       `json:"categoryId" bson:"categoryId"` // 类别Id
+	Name         string                `json:"name" bson:"name"`                 // 商品名称
+	Amount       float64               `json:"amount" bson:"amount"`             // 商品价格
+	Des          string                `json:"des" bson:"name"`                  // 描述
+	Introduction string                `json:"introduction" bson:"introduction"` // 简介
+	Type         uint8                 `json:"type" bson:"type"`                 // 商品类型
+	ImageUrl     string                `json:"imageUrl" bson:"imageUrl"`         // 图片链接
+	Status       types.CommodityStatus `json:"status" bson:"status"`             // 商品状态
+	CategoryId   string                `json:"categoryId" bson:"categoryId"`     // 类别Id
 }
 
 // OrderItemSubDo 订单明细
@@ -52,39 +52,39 @@ type OrderItemSubDo struct {
 // PaySubDo 支付信息
 type PaySubDo struct {
 	Do
-	PayUser   string   `json:"payUser" bson:"payUser"`     // 支付人
-	PayAmount float64  `json:"payAmount" bson:"payAmount"` // 支付金额
-	BfId      string   `json:"bfId" bson:"bfId"`           // 支付关联ID
-	PayStatus uint8    `json:"payStatus" bson:"payStatus"` // 支付状态
-	PayLog    []string `json:"payLog" bson:"payLog"`       // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
+	PayUser   string          `json:"payUser" bson:"payUser"`     // 支付人
+	PayAmount float64         `json:"payAmount" bson:"payAmount"` // 支付金额
+	BfId      string          `json:"bfId" bson:"bfId"`           // 支付关联ID
+	PayStatus types.PayStatus `json:"payStatus" bson:"payStatus"` // 支付状态
+	PayLog    []string        `json:"payLog" bson:"payLog"`       // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
 }
 
 // Beneficiary 收款信息
 type Beneficiary struct {
 	Do
-	Type   string      `json:"type" bson:"type"`     // 支付类型
-	Status uint8       `json:"status" bson:"status"` // 状态：正常使用、停用、冻结
-	Data   interface{} `json:"data" bson:"data"`     // 支付使用数据：各个支付方式需要信息
-	UserId string      `json:"userId" bson:"userId"` // 收款人Id,必是注册用户
+	Type   string                  `json:"type" bson:"type"`     // 支付类型
+	Status types.BeneficiaryStatus `json:"status" bson:"status"` // 状态：正常使用、停用、冻结
+	Data   interface{}             `json:"data" bson:"data"`     // 支付使用数据：各个支付方式需要信息
+	UserId string                  `json:"userId" bson:"userId"` // 收款人Id,必是注册用户
 }
 
 // OrderDo 订单
 type OrderDo struct {
 	Do
-	OriginalAmount float64          `json:"originalAmount" bson:"originalAmount"` // 总商品原金额
-	Amount         float64          `json:"amount" bson:"amount"`                 // 总商品折扣金额
-	Items          []OrderItemSubDo `json:"items" bson:"items"`                   // 订单明细
-	Payment        PaySubDo         `json:"payment" bson:"payment"`               // 支付信息
-	OrderStatus    uint8            `json:"orderStatus" bson:"orderStatus"`       // 订单状态 开始、待支付、完成
+	OriginalAmount float64           `json:"originalAmount" bson:"originalAmount"` // 总商品原金额
+	Amount         float64           `json:"amount" bson:"amount"`                 // 总商品折扣金额
+	Items          []OrderItemSubDo  `json:"items" bson:"items"`                   // 订单明细
+	Payment        PaySubDo          `json:"payment" bson:"payment"`               // 支付信息
+	OrderStatus    types.OrderStatus `json:"orderStatus" bson:"orderStatus"`       // 订单状态 开始、待支付、完成
 }
 
 // StockDo 库存
 type StockDo struct {
 	Do
-	Data       interface{} `json:"data" bson:"data"`             // 库存内容
-	CategoryId string      `json:"categoryId" bson:"categoryId"` // 关联类别Id
-	OrderId    string      `json:"orderId" bson:"orderId"`       // 关联订单Id
-	Status     uint8       `json:"status" bson:"status"`         // 状态 0 待使用  1 已使用
+	Data       interface{}       `json:"data" bson:"data"`             // 库存内容
+	CategoryId string            `json:"categoryId" bson:"categoryId"` // 关联类别Id
+	OrderId    string            `json:"orderId" bson:"orderId"`       // 关联订单Id
+	Status     types.StockStatus `json:"status" bson:"status"`         // 状态 0 待使用  1 已使用
 }
 
 // CategoryDo 类别
