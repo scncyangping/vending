@@ -10,22 +10,25 @@ const (
 	JWT AuthenticationType = "JWT"
 )
 
-type ResultCode string
-type ResultMsg string
+type ResultCode string // 返回代码
+type ResultMsg string  // 返回信息
 
-type UserType uint8
-type UserStatus uint8
+type UserType uint8   // 用户类型
+type UserStatus uint8 // 用户状态
 
-type CategoryStatus uint8
+type Status uint8
 
 const (
-	ADMIN UserType = 1 << iota
+	ADMIN    UserType = 1 << iota // 管理员
+	MERCHANT                      // 商家
 	USER
 
 	NORMAL UserStatus = 1 << iota
 	FROZEN
 
-	ON CategoryStatus = 1 << iota
+	CREATE Status = 1 << iota
+	PENDING
+	ON
 	OFF
 )
 
