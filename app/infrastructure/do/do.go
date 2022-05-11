@@ -1,4 +1,4 @@
-package main
+package do
 
 import (
 	"vending/app/types"

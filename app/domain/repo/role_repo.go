@@ -6,9 +6,9 @@ import (
 )
 
 type RoleRepo interface {
-	SaveRole(entity *entity.RoleEntity) string
+	SaveRole(entity *entity.RoleEn) string
 	DeleteRole(string) error
-	GetRoleById(string) *vo.UserVo
-	ListRoleBy(map[string]interface{}) []*vo.UserVo
-	ListRolePageBy(skip, limit int64, sort, filter interface{}) []*vo.UserVo
+	GetRoleById(string) *vo.RoleVo
+	ListRoleBy(map[string]interface{}) []*vo.RoleVo
+	ListRolePageBy(skip, limit int64, sort, filter interface{}) []*vo.RoleVo
 }

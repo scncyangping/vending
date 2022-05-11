@@ -7,7 +7,6 @@ import (
 	"vending/app/domain/vo"
 	"vending/app/infrastructure/pkg/util"
 	"vending/app/infrastructure/pkg/util/snowflake"
-	"vending/app/types"
 	"vending/app/types/constants"
 )
 
@@ -37,8 +36,8 @@ func (a *AuthSrvImp) Register(re *dto.RegisterRe) (string, error) {
 	if ue.Id == constants.EmptyStr {
 		ue.Id = snowflake.NextId()
 	}
-	if ue.Type == constants.ZERO {
-		ue.Status = types.NORMAL
-	}
+	//if ue.Type == constants.ZERO {
+	//	ue.Status = types.NORMAL
+	//}
 	return a.authSrv.Register(&ue)
 }
