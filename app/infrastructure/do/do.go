@@ -59,8 +59,8 @@ type PayDesDo struct {
 	PayLog    []string        `json:"payLog" bson:"payLog"`       // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
 }
 
-// Beneficiary 收款信息
-type Beneficiary struct {
+// BeneficiaryDo 收款信息
+type BeneficiaryDo struct {
 	Do
 	Type   string                  `json:"type" bson:"type"`     // 支付类型
 	Status types.BeneficiaryStatus `json:"status" bson:"status"` // 状态：正常使用、停用、冻结
