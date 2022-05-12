@@ -49,8 +49,8 @@ type OrderItemSubDo struct {
 	Amount         float64 `json:"amount" bson:"amount"`                 // 折扣计算后金额
 }
 
-// PaySubDo 支付信息
-type PaySubDo struct {
+// PayDesDo 支付信息
+type PayDesDo struct {
 	Do
 	PayUser   string          `json:"payUser" bson:"payUser"`     // 支付人
 	PayAmount float64         `json:"payAmount" bson:"payAmount"` // 支付金额
@@ -74,7 +74,7 @@ type OrderDo struct {
 	OriginalAmount float64           `json:"originalAmount" bson:"originalAmount"` // 总商品原金额
 	Amount         float64           `json:"amount" bson:"amount"`                 // 总商品折扣金额
 	Items          []OrderItemSubDo  `json:"items" bson:"items"`                   // 订单明细
-	Payment        PaySubDo          `json:"payment" bson:"payment"`               // 支付信息
+	Payment        PayDesDo          `json:"payment" bson:"payment"`               // 支付信息
 	OrderStatus    types.OrderStatus `json:"orderStatus" bson:"orderStatus"`       // 订单状态 开始、待支付、完成
 }
 
