@@ -1,6 +1,9 @@
 package entity
 
-import "vending/app/types"
+import (
+	"vending/app/domain/obj"
+	"vending/app/types"
+)
 
 type RoleEn struct {
 	Id   string `json:"id"`
@@ -29,6 +32,7 @@ type CommodityEn struct {
 	Status       types.CommodityStatus `json:"status"`       // 商品状态
 }
 
+// BeneficiaryEn 收款信息
 type BeneficiaryEn struct {
 	Id     string                  `json:"id"`
 	Type   string                  `json:"type"`   // 支付类型
@@ -37,11 +41,37 @@ type BeneficiaryEn struct {
 	UserId string                  `json:"userId"` // 收款人Id,必是注册用户
 }
 
-type PaySubEn struct {
-	Id        string          `json:"id" bson:"_id"`
-	PayUser   string          `json:"payUser" bson:"payUser"`     // 支付人
-	PayAmount float64         `json:"payAmount" bson:"payAmount"` // 支付金额
-	BfId      string          `json:"bfId" bson:"bfId"`           // 支付关联ID
-	PayStatus types.PayStatus `json:"payStatus" bson:"payStatus"` // 支付状态
-	PayLog    []string        `json:"payLog" bson:"payLog"`       // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
+// PayDesEn 支付信息
+type PayDesEn struct {
+	Id        string          `json:"id"`
+	PayUser   string          `json:"payUser"`   // 支付人
+	PayAmount float64         `json:"payAmount"` // 支付金额
+	PayStatus types.PayStatus `json:"payStatus"` // 支付状态
+	PayLog    []string        `json:"payLog"`    // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
+}
+
+// OrderEn 订单
+type OrderEn struct {
+	Id             string             `json:"id"`
+	OriginalAmount float64            `json:"originalAmount"` // 总商品原金额
+	Amount         float64            `json:"amount"`
+	OrderStatus    types.OrderStatus  `json:"orderStatus"` // 订单状态 开始、待支付、完成
+	Items          []obj.OrderItemObj `json:"items"`
+}
+
+// StockEn 库存
+type StockEn struct {
+	Id         string            `json:"id"`
+	Data       interface{}       `json:"data"`       // 库存内容
+	CategoryId string            `json:"categoryId"` // 关联类别Id
+	Status     types.StockStatus `json:"status"`
+}
+
+// CategoryEn 类别
+type CategoryEn struct {
+	Id       string `json:"id"`
+	Name     string `json:"name" `     // 类别名称
+	PId      string `json:"pId" `      // 父类别Id
+	StockNum int    `json:"stockNum" ` // 库存数量 用库存数量去锁定待支付订单
+	SellType uint8  `json:"sellType" ` // 0 一次性 1 可重复使用
 }
