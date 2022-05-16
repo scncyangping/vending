@@ -1,15 +1,18 @@
 package aggregate
 
-import "vending/app/domain/dto"
+import "vending/app/domain/entity"
 
-type CommodityAg struct {
-	Id            string            `json:"id"`
-	Name          string            `json:"name"`
-	Des           string            `json:"des"`
-	Introduction  string            `json:"introduction"`
-	Type          uint8             `json:"type"`
-	CommodityData dto.CommodityData `json:"commodityData"`
+// 商品聚合 包含商品关联行为
+
+// 导入商品 关联库存
+// 修改商品信息
+//
+
+type CommodityAggregateRepo interface {
 }
 
 type CommodityAggregate struct {
+	Cma        entity.CommodityEn
+	CategoryId string
+	repo       CommodityAggregateRepo
 }
