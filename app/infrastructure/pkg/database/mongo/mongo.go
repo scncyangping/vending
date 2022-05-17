@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
+	"vending/app/types"
 )
 
 const (
@@ -149,6 +150,7 @@ func (m *MgoV) UpdateOne(filter, update interface{}) (int64, error) {
 func (m *MgoV) FindOne(b interface{}, target interface{}) error {
 	var err error
 	collection := getCollection(m)
+	addIsDelFilter(b)
 	singleResult := collection.FindOne(context.TODO(), b)
 	if singleResult.Err() != nil {
 		err = singleResult.Err()
@@ -158,11 +160,18 @@ func (m *MgoV) FindOne(b interface{}, target interface{}) error {
 	return err
 }
 
+func addIsDelFilter(b interface{}) {
+	if _, ok := b.(types.B)["isDeleted"]; !ok {
+		b.(types.B)["isDeleted"] = 0
+	}
+}
+
 // Find 查询文档
 func (m *MgoV) Find(filter interface{}, tSlice interface{}) error {
 	var err error
 
 	collection := getCollection(m)
+	addIsDelFilter(filter)
 	if cursor, er := collection.Find(context.TODO(), filter); er == nil {
 		err = cursor.All(context.TODO(), tSlice)
 	} else {
@@ -173,7 +182,8 @@ func (m *MgoV) Find(filter interface{}, tSlice interface{}) error {
 
 // Count 查询集合里有多少数据
 func (m *MgoV) Count() (int64, error) {
-	return getCollection(m).EstimatedDocumentCount(context.TODO())
+	//return getCollection(m).EstimatedDocumentCount()
+	return getCollection(m).CountDocuments(context.TODO(), types.B{"isDeleted": 0})
 }
 
 // FindBy 按选项查询集合
@@ -186,6 +196,7 @@ func (m *MgoV) FindBy(skip, limit int64, sort, filter interface{}, tSlice interf
 	collection := getCollection(m)
 	findOptions := options.Find().SetSort(sort).SetLimit(limit).SetSkip(skip)
 
+	addIsDelFilter(filter)
 	if temp, er := collection.Find(context.Background(), filter, findOptions); er == nil {
 		err = temp.All(context.TODO(), tSlice)
 	} else {

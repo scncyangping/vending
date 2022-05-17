@@ -13,6 +13,7 @@ type Repository struct {
 	OrderRepo       *mgoRepo.OrderMgoRepository
 	PayDesRepo      *mgoRepo.PayDesMgoRepository
 	StockRepo       *mgoRepo.StockMgoRepository
+	RoleRepo        *mgoRepo.RoleMgoRepository
 }
 
 // NewRepository wire
@@ -25,5 +26,6 @@ func NewRepository() *Repository {
 		OrderRepo:       mgoRepo.NewOrderMgoRepository(mongo.OpCn("order")),
 		PayDesRepo:      mgoRepo.NewPayDesMgoRepository(mongo.OpCn("pay_des")),
 		StockRepo:       mgoRepo.NewStockMgoRepository(mongo.OpCn("stock")),
+		RoleRepo:        mgoRepo.NewRoleMgoRepository(mongo.OpCn("role")),
 	}
 }

@@ -5,6 +5,9 @@ import (
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/do"
 	"vending/app/infrastructure/pkg/database/mongo"
+	"vending/app/infrastructure/pkg/log"
+	"vending/app/infrastructure/pkg/util"
+	"vending/app/types"
 )
 
 var _ repo.StockRepo = (*StockMgoRepository)(nil)
@@ -13,26 +16,59 @@ type StockMgoRepository struct {
 	mgo *mongo.MgoV
 }
 
-func NewStockMgoRepository(m *mongo.MgoV) *StockMgoRepository {
-	return &StockMgoRepository{mgo: m}
-}
-
-func (s StockMgoRepository) SaveStock(entity *entity.StockEn) string {
-	panic("implement me")
+func (s StockMgoRepository) SaveStock(entity *entity.StockEn) (string, error) {
+	var (
+		do *do.StockDo
+	)
+	util.StructCopy(do, entity)
+	do.CreateTime = util.NowTimestamp()
+	do.UpdateTime = util.NowTimestamp()
+	return s.mgo.InsertOne(do)
 }
 
 func (s StockMgoRepository) DeleteStock(s2 string) error {
-	panic("implement me")
+	if _, err := s.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
+		return err
+	}
+	return nil
 }
 
-func (s StockMgoRepository) GetStockById(s2 string) *do.StockDo {
-	panic("implement me")
+func (s StockMgoRepository) GetStockById(s2 string) (*do.StockDo, error) {
+	var (
+		err error
+		do  do.StockDo
+	)
+	if err = s.mgo.FindOne(types.B{"_id": s}, &do); err != nil {
+		log.Logger().Error("GetStockById Error, %v", err)
+		return nil, err
+	}
+	return &do, nil
 }
 
-func (s StockMgoRepository) ListStockBy(m map[string]interface{}) []*do.StockDo {
-	panic("implement me")
+func (s StockMgoRepository) ListStockBy(m map[string]interface{}) ([]*do.StockDo, error) {
+	var (
+		err error
+		dos []*do.StockDo
+	)
+	if err = s.mgo.Find(m, &dos); err != nil {
+		log.Logger().Error("ListStockBy Error, %v", m)
+		return nil, err
+	}
+	return dos, nil
 }
 
-func (s StockMgoRepository) ListStockPageBy(skip, limit int64, sort, filter interface{}) []*do.StockDo {
-	panic("implement me")
+func (s StockMgoRepository) ListStockPageBy(skip, limit int64, sort, filter interface{}) ([]*do.StockDo, error) {
+	var (
+		err error
+		dos []*do.StockDo
+	)
+	if err = s.mgo.FindBy(skip, limit, sort, filter, &dos); err != nil {
+		log.Logger().Error("ListStockPageBy Error, %v", err)
+		return nil, err
+	}
+	return dos, nil
+}
+
+func NewStockMgoRepository(m *mongo.MgoV) *StockMgoRepository {
+	return &StockMgoRepository{mgo: m}
 }
