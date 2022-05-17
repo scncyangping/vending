@@ -58,7 +58,7 @@ func (b *BeneficiaryMgoRepository) GetBeneficiaryById(s string) (*do.Beneficiary
 	return &bfa, nil
 }
 
-func (b *BeneficiaryMgoRepository) ListBeneficiaryBy(m map[string]interface{}) ([]*do.BeneficiaryDo, error) {
+func (b *BeneficiaryMgoRepository) ListBeneficiaryBy(m types.B) ([]*do.BeneficiaryDo, error) {
 	var (
 		err error
 		bfs []*do.BeneficiaryDo

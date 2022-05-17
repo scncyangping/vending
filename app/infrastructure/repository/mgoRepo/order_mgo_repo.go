@@ -53,7 +53,7 @@ func (o *OrderMgoRepository) GetOrderById(s string) (*do.OrderDo, error) {
 	return &do, nil
 }
 
-func (o *OrderMgoRepository) ListOrderBy(m map[string]interface{}) ([]*do.OrderDo, error) {
+func (o *OrderMgoRepository) ListOrderBy(m types.B) ([]*do.OrderDo, error) {
 	var (
 		err error
 		dos []*do.OrderDo

@@ -54,7 +54,7 @@ func (c *CommodityMgoRepository) GetCommodityById(s string) (*do.CommodityDo, er
 	return &do, nil
 }
 
-func (c *CommodityMgoRepository) ListCommodityBy(m map[string]interface{}) ([]*do.CommodityDo, error) {
+func (c *CommodityMgoRepository) ListCommodityBy(m types.B) ([]*do.CommodityDo, error) {
 	var (
 		err error
 		dos []*do.CommodityDo

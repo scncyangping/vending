@@ -26,12 +26,12 @@ func (s *StockMgoRepository) SaveStock(entity *entity.StockEn) (string, error) {
 	return s.mgo.InsertOne(do)
 }
 
-func (s *StockMgoRepository) UpdateStock(filter types.B, update types.B) error {
-	if _, err := s.mgo.Update(filter, update); err != nil {
+func (s *StockMgoRepository) UpdateStock(filter types.B, update types.B) (int64, error) {
+	if count, err := s.mgo.Update(filter, update); err != nil {
 		log.Logger().Error("UpdateStock Error, %v", err)
-		return err
+		return count, err
 	}
-	return nil
+	return 0, nil
 }
 
 func (s *StockMgoRepository) DeleteStock(s2 string) error {
@@ -53,7 +53,7 @@ func (s *StockMgoRepository) GetStockById(s2 string) (*do.StockDo, error) {
 	return &do, nil
 }
 
-func (s *StockMgoRepository) ListStockBy(m map[string]interface{}) ([]*do.StockDo, error) {
+func (s *StockMgoRepository) ListStockBy(m types.B) ([]*do.StockDo, error) {
 	var (
 		err error
 		dos []*do.StockDo

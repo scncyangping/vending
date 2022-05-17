@@ -53,7 +53,7 @@ func (r *RoleMgoRepository) GetRoleById(s string) (*do.RoleDo, error) {
 	return &do, nil
 }
 
-func (r *RoleMgoRepository) ListRoleBy(m map[string]interface{}) ([]*do.RoleDo, error) {
+func (r *RoleMgoRepository) ListRoleBy(m types.B) ([]*do.RoleDo, error) {
 	var (
 		err error
 		dos []*do.RoleDo

@@ -53,7 +53,7 @@ func (p *PayDesMgoRepository) GetPayDesById(s string) (*do.PayDesDo, error) {
 	return &do, nil
 }
 
-func (p *PayDesMgoRepository) ListPayDesBy(m map[string]interface{}) ([]*do.PayDesDo, error) {
+func (p *PayDesMgoRepository) ListPayDesBy(m types.B) ([]*do.PayDesDo, error) {
 	var (
 		err error
 		dos []*do.PayDesDo

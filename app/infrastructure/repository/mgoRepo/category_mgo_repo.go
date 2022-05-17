@@ -38,6 +38,14 @@ func (c *CategoryMgoRepository) UpdateCategory(filter types.B, update types.B) e
 	return nil
 }
 
+func (c *CategoryMgoRepository) DeleteCategoryByIds(ids []string) error {
+	if _, err := c.mgo.Update(types.B{"_id": types.B{"$in": ids}}, types.B{"isDeleted": 1}); err != nil {
+		log.Logger().Error("DeleteCategoryByIds Error, %v", err)
+		return err
+	}
+	return nil
+}
+
 func (c *CategoryMgoRepository) DeleteCategory(s string) error {
 	if _, err := c.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
 		log.Logger().Error("DeleteCategory Error, %v", err)
@@ -70,7 +78,7 @@ func (c *CategoryMgoRepository) GetCategoryById(s string) (*do.CategoryDo, error
 	return &cg, nil
 }
 
-func (c *CategoryMgoRepository) ListCategoryBy(m map[string]interface{}) ([]*do.CategoryDo, error) {
+func (c *CategoryMgoRepository) ListCategoryBy(m types.B) ([]*do.CategoryDo, error) {
 	var (
 		err error
 		cgs []*do.CategoryDo
