@@ -90,8 +90,8 @@ type StockDo struct {
 // CategoryDo 类别
 type CategoryDo struct {
 	Do
-	Name     string `json:"name" bson:"name"`         // 类别名称
-	PId      string `json:"pId" bson:"pId"`           // 父类别Id
-	StockNum int    `json:"stockNum" bson:"stockNum"` // 库存数量 用库存数量去锁定待支付订单
-	SellType uint8  `json:"sellType" bson:"sellType"` // 0 一次性 1 可重复使用
+	Name     string         `json:"name" bson:"name"`         // 类别名称
+	PId      string         `json:"pId" bson:"pId"`           // 父类别Id
+	StockNum int            `json:"stockNum" bson:"stockNum"` // 库存数量 用库存数量去锁定待支付订单
+	SellType types.SellType `json:"sellType" bson:"sellType"` // 0 一次性 1 可重复使用
 }

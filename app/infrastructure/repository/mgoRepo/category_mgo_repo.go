@@ -46,6 +46,18 @@ func (c *CategoryMgoRepository) DeleteCategory(s string) error {
 	return nil
 }
 
+func (c *CategoryMgoRepository) GetCategoryByCategoryName(s string) (*do.CategoryDo, error) {
+	var (
+		err error
+		cg  do.CategoryDo
+	)
+	if err = c.mgo.FindOne(types.B{"name": s}, &cg); err != nil {
+		log.Logger().Error("GetCategoryByCategoryName Error, %v", err)
+		return nil, err
+	}
+	return &cg, nil
+}
+
 func (c *CategoryMgoRepository) GetCategoryById(s string) (*do.CategoryDo, error) {
 	var (
 		err error
