@@ -49,15 +49,15 @@ var BeneficiaryStatusM = map[BeneficiaryStatus]string{
 type CommodityStatus uint8 // 商品状态
 
 const (
-	Pending CommodityStatus = 1 << iota
-	Up
-	Down
+	CommodityPending CommodityStatus = 1 << iota
+	CommodityUp
+	CommodityDown
 )
 
 var CommodityStatusM = map[CommodityStatus]string{
-	Pending: "审核中",
-	Up:      "已上架",
-	Down:    "已下架",
+	CommodityPending: "审核中",
+	CommodityUp:      "已上架",
+	CommodityDown:    "已下架",
 }
 
 type OrderStatus uint8 // 订单状态
