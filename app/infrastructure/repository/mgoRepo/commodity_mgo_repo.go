@@ -16,7 +16,7 @@ type CommodityMgoRepository struct {
 	mgo *mongo.MgoV
 }
 
-func (c CommodityMgoRepository) SaveCommodity(entity *entity.CommodityEn, CategoryId string) (string, error) {
+func (c *CommodityMgoRepository) SaveCommodity(entity *entity.CommodityEn, CategoryId string) (string, error) {
 	var (
 		commodityDo *do.CommodityDo
 	)
@@ -27,14 +27,22 @@ func (c CommodityMgoRepository) SaveCommodity(entity *entity.CommodityEn, Catego
 	return c.mgo.InsertOne(commodityDo)
 }
 
-func (c CommodityMgoRepository) DeleteCommodity(s string) error {
+func (c *CommodityMgoRepository) UpdateCommodity(filter types.B, update types.B) error {
+	if _, err := c.mgo.Update(filter, update); err != nil {
+		log.Logger().Error("UpdateCommodity Error, %v", err)
+		return err
+	}
+	return nil
+}
+
+func (c *CommodityMgoRepository) DeleteCommodity(s string) error {
 	if _, err := c.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (c CommodityMgoRepository) GetCommodityById(s string) (*do.CommodityDo, error) {
+func (c *CommodityMgoRepository) GetCommodityById(s string) (*do.CommodityDo, error) {
 	var (
 		err error
 		do  do.CommodityDo
@@ -46,7 +54,7 @@ func (c CommodityMgoRepository) GetCommodityById(s string) (*do.CommodityDo, err
 	return &do, nil
 }
 
-func (c CommodityMgoRepository) ListCommodityBy(m map[string]interface{}) ([]*do.CommodityDo, error) {
+func (c *CommodityMgoRepository) ListCommodityBy(m map[string]interface{}) ([]*do.CommodityDo, error) {
 	var (
 		err error
 		dos []*do.CommodityDo
@@ -58,7 +66,7 @@ func (c CommodityMgoRepository) ListCommodityBy(m map[string]interface{}) ([]*do
 	return dos, nil
 }
 
-func (c CommodityMgoRepository) ListCommodityPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CommodityDo, error) {
+func (c *CommodityMgoRepository) ListCommodityPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CommodityDo, error) {
 	var (
 		err error
 		dos []*do.CommodityDo

@@ -16,7 +16,7 @@ type OrderMgoRepository struct {
 	mgo *mongo.MgoV
 }
 
-func (o OrderMgoRepository) SaveOrder(entity *entity.OrderEn) (string, error) {
+func (o *OrderMgoRepository) SaveOrder(entity *entity.OrderEn) (string, error) {
 	var (
 		do *do.OrderDo
 	)
@@ -26,14 +26,22 @@ func (o OrderMgoRepository) SaveOrder(entity *entity.OrderEn) (string, error) {
 	return o.mgo.InsertOne(do)
 }
 
-func (o OrderMgoRepository) DeleteOrder(s string) error {
+func (o *OrderMgoRepository) UpdateOrder(filter types.B, update types.B) error {
+	if _, err := o.mgo.Update(filter, update); err != nil {
+		log.Logger().Error("UpdateOrder Error, %v", err)
+		return err
+	}
+	return nil
+}
+
+func (o *OrderMgoRepository) DeleteOrder(s string) error {
 	if _, err := o.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (o OrderMgoRepository) GetOrderById(s string) (*do.OrderDo, error) {
+func (o *OrderMgoRepository) GetOrderById(s string) (*do.OrderDo, error) {
 	var (
 		err error
 		do  do.OrderDo
@@ -45,7 +53,7 @@ func (o OrderMgoRepository) GetOrderById(s string) (*do.OrderDo, error) {
 	return &do, nil
 }
 
-func (o OrderMgoRepository) ListOrderBy(m map[string]interface{}) ([]*do.OrderDo, error) {
+func (o *OrderMgoRepository) ListOrderBy(m map[string]interface{}) ([]*do.OrderDo, error) {
 	var (
 		err error
 		dos []*do.OrderDo
@@ -57,7 +65,7 @@ func (o OrderMgoRepository) ListOrderBy(m map[string]interface{}) ([]*do.OrderDo
 	return dos, nil
 }
 
-func (o OrderMgoRepository) ListOrderPageBy(skip, limit int64, sort, filter interface{}) ([]*do.OrderDo, error) {
+func (o *OrderMgoRepository) ListOrderPageBy(skip, limit int64, sort, filter interface{}) ([]*do.OrderDo, error) {
 	var (
 		err error
 		dos []*do.OrderDo

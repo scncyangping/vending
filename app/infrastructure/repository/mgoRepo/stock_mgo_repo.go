@@ -16,7 +16,7 @@ type StockMgoRepository struct {
 	mgo *mongo.MgoV
 }
 
-func (s StockMgoRepository) SaveStock(entity *entity.StockEn) (string, error) {
+func (s *StockMgoRepository) SaveStock(entity *entity.StockEn) (string, error) {
 	var (
 		do *do.StockDo
 	)
@@ -26,14 +26,22 @@ func (s StockMgoRepository) SaveStock(entity *entity.StockEn) (string, error) {
 	return s.mgo.InsertOne(do)
 }
 
-func (s StockMgoRepository) DeleteStock(s2 string) error {
+func (s *StockMgoRepository) UpdateStock(filter types.B, update types.B) error {
+	if _, err := s.mgo.Update(filter, update); err != nil {
+		log.Logger().Error("UpdateStock Error, %v", err)
+		return err
+	}
+	return nil
+}
+
+func (s *StockMgoRepository) DeleteStock(s2 string) error {
 	if _, err := s.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s StockMgoRepository) GetStockById(s2 string) (*do.StockDo, error) {
+func (s *StockMgoRepository) GetStockById(s2 string) (*do.StockDo, error) {
 	var (
 		err error
 		do  do.StockDo
@@ -45,7 +53,7 @@ func (s StockMgoRepository) GetStockById(s2 string) (*do.StockDo, error) {
 	return &do, nil
 }
 
-func (s StockMgoRepository) ListStockBy(m map[string]interface{}) ([]*do.StockDo, error) {
+func (s *StockMgoRepository) ListStockBy(m map[string]interface{}) ([]*do.StockDo, error) {
 	var (
 		err error
 		dos []*do.StockDo
@@ -57,7 +65,7 @@ func (s StockMgoRepository) ListStockBy(m map[string]interface{}) ([]*do.StockDo
 	return dos, nil
 }
 
-func (s StockMgoRepository) ListStockPageBy(skip, limit int64, sort, filter interface{}) ([]*do.StockDo, error) {
+func (s *StockMgoRepository) ListStockPageBy(skip, limit int64, sort, filter interface{}) ([]*do.StockDo, error) {
 	var (
 		err error
 		dos []*do.StockDo

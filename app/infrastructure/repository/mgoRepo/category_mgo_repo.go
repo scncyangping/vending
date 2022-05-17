@@ -20,7 +20,7 @@ func NewCategoryMgoRepository(m *mongo.MgoV) *CategoryMgoRepository {
 	return &CategoryMgoRepository{mgo: m}
 }
 
-func (c CategoryMgoRepository) SaveCategory(entity *entity.CategoryEn) (string, error) {
+func (c *CategoryMgoRepository) SaveCategory(entity *entity.CategoryEn) (string, error) {
 	var (
 		CategoryDo *do.CategoryDo
 	)
@@ -30,14 +30,23 @@ func (c CategoryMgoRepository) SaveCategory(entity *entity.CategoryEn) (string, 
 	return c.mgo.InsertOne(CategoryDo)
 }
 
-func (c CategoryMgoRepository) DeleteCategory(s string) error {
-	if _, err := c.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
+func (c *CategoryMgoRepository) UpdateCategory(filter types.B, update types.B) error {
+	if _, err := c.mgo.Update(filter, update); err != nil {
+		log.Logger().Error("UpdateCategory Error, %v", err)
 		return err
 	}
 	return nil
 }
 
-func (c CategoryMgoRepository) GetCategoryById(s string) (*do.CategoryDo, error) {
+func (c *CategoryMgoRepository) DeleteCategory(s string) error {
+	if _, err := c.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
+		log.Logger().Error("DeleteCategory Error, %v", err)
+		return err
+	}
+	return nil
+}
+
+func (c *CategoryMgoRepository) GetCategoryById(s string) (*do.CategoryDo, error) {
 	var (
 		err error
 		cg  do.CategoryDo
@@ -49,7 +58,7 @@ func (c CategoryMgoRepository) GetCategoryById(s string) (*do.CategoryDo, error)
 	return &cg, nil
 }
 
-func (c CategoryMgoRepository) ListCategoryBy(m map[string]interface{}) ([]*do.CategoryDo, error) {
+func (c *CategoryMgoRepository) ListCategoryBy(m map[string]interface{}) ([]*do.CategoryDo, error) {
 	var (
 		err error
 		cgs []*do.CategoryDo
@@ -61,7 +70,7 @@ func (c CategoryMgoRepository) ListCategoryBy(m map[string]interface{}) ([]*do.C
 	return cgs, nil
 }
 
-func (c CategoryMgoRepository) ListCategoryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CategoryDo, error) {
+func (c *CategoryMgoRepository) ListCategoryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CategoryDo, error) {
 	var (
 		err error
 		cgs []*do.CategoryDo

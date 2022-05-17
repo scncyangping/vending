@@ -16,7 +16,7 @@ type RoleMgoRepository struct {
 	mgo *mongo.MgoV
 }
 
-func (r RoleMgoRepository) SaveRole(entity *entity.RoleEn) (string, error) {
+func (r *RoleMgoRepository) SaveRole(entity *entity.RoleEn) (string, error) {
 	var (
 		do *do.RoleDo
 	)
@@ -26,14 +26,22 @@ func (r RoleMgoRepository) SaveRole(entity *entity.RoleEn) (string, error) {
 	return r.mgo.InsertOne(do)
 }
 
-func (r RoleMgoRepository) DeleteRole(s string) error {
+func (r *RoleMgoRepository) UpdateRole(filter types.B, update types.B) error {
+	if _, err := r.mgo.Update(filter, update); err != nil {
+		log.Logger().Error("UpdateRole Error, %v", err)
+		return err
+	}
+	return nil
+}
+
+func (r *RoleMgoRepository) DeleteRole(s string) error {
 	if _, err := r.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (r RoleMgoRepository) GetRoleById(s string) (*do.RoleDo, error) {
+func (r *RoleMgoRepository) GetRoleById(s string) (*do.RoleDo, error) {
 	var (
 		err error
 		do  do.RoleDo
@@ -45,7 +53,7 @@ func (r RoleMgoRepository) GetRoleById(s string) (*do.RoleDo, error) {
 	return &do, nil
 }
 
-func (r RoleMgoRepository) ListRoleBy(m map[string]interface{}) ([]*do.RoleDo, error) {
+func (r *RoleMgoRepository) ListRoleBy(m map[string]interface{}) ([]*do.RoleDo, error) {
 	var (
 		err error
 		dos []*do.RoleDo
@@ -57,7 +65,7 @@ func (r RoleMgoRepository) ListRoleBy(m map[string]interface{}) ([]*do.RoleDo, e
 	return dos, nil
 }
 
-func (r RoleMgoRepository) ListRolePageBy(skip, limit int64, sort, filter interface{}) ([]*do.RoleDo, error) {
+func (r *RoleMgoRepository) ListRolePageBy(skip, limit int64, sort, filter interface{}) ([]*do.RoleDo, error) {
 	var (
 		err error
 		dos []*do.RoleDo

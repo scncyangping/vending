@@ -25,6 +25,14 @@ func (u *UserMgoRepository) SaveUser(entity *entity.UserEn) (string, error) {
 	return u.mgo.InsertOne(userDo)
 }
 
+func (u *UserMgoRepository) UpdateUser(filter types.B, update types.B) error {
+	if _, err := u.mgo.Update(filter, update); err != nil {
+		log.Logger().Error("UpdateUser Error, %v", err)
+		return err
+	}
+	return nil
+}
+
 func (u *UserMgoRepository) DeleteUser(s string) error {
 	u.mgo.DeleteOne(types.B{"_id": s})
 	return nil

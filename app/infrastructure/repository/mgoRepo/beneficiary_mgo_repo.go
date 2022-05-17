@@ -20,7 +20,7 @@ func NewBeneficiaryMgoRepository(m *mongo.MgoV) *BeneficiaryMgoRepository {
 	return &BeneficiaryMgoRepository{mgo: m}
 }
 
-func (b BeneficiaryMgoRepository) SaveBeneficiary(entity *entity.BeneficiaryEn) (string, error) {
+func (b *BeneficiaryMgoRepository) SaveBeneficiary(entity *entity.BeneficiaryEn) (string, error) {
 	var (
 		beneficiaryDo *do.BeneficiaryDo
 	)
@@ -30,12 +30,23 @@ func (b BeneficiaryMgoRepository) SaveBeneficiary(entity *entity.BeneficiaryEn) 
 	return b.mgo.InsertOne(beneficiaryDo)
 }
 
-func (b BeneficiaryMgoRepository) DeleteBeneficiary(s string) error {
-	b.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1})
+func (b *BeneficiaryMgoRepository) UpdateBeneficiary(q types.B, u types.B) error {
+	if _, err := b.mgo.Update(q, u); err != nil {
+		log.Logger().Error("UpdateBeneficiary Error, %v", err)
+		return err
+	}
 	return nil
 }
 
-func (b BeneficiaryMgoRepository) GetBeneficiaryById(s string) (*do.BeneficiaryDo, error) {
+func (b *BeneficiaryMgoRepository) DeleteBeneficiary(s string) error {
+	if _, err := b.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
+		log.Logger().Error("DeleteBeneficiary Error, %v", err)
+		return err
+	}
+	return nil
+}
+
+func (b *BeneficiaryMgoRepository) GetBeneficiaryById(s string) (*do.BeneficiaryDo, error) {
 	var (
 		err error
 		bfa do.BeneficiaryDo
@@ -47,7 +58,7 @@ func (b BeneficiaryMgoRepository) GetBeneficiaryById(s string) (*do.BeneficiaryD
 	return &bfa, nil
 }
 
-func (b BeneficiaryMgoRepository) ListBeneficiaryBy(m map[string]interface{}) ([]*do.BeneficiaryDo, error) {
+func (b *BeneficiaryMgoRepository) ListBeneficiaryBy(m map[string]interface{}) ([]*do.BeneficiaryDo, error) {
 	var (
 		err error
 		bfs []*do.BeneficiaryDo
@@ -59,7 +70,7 @@ func (b BeneficiaryMgoRepository) ListBeneficiaryBy(m map[string]interface{}) ([
 	return bfs, nil
 }
 
-func (b BeneficiaryMgoRepository) ListBeneficiaryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.BeneficiaryDo, error) {
+func (b *BeneficiaryMgoRepository) ListBeneficiaryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.BeneficiaryDo, error) {
 	var (
 		err error
 		bfs []*do.BeneficiaryDo

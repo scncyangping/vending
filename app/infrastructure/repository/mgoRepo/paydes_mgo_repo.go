@@ -16,7 +16,7 @@ type PayDesMgoRepository struct {
 	mgo *mongo.MgoV
 }
 
-func (p PayDesMgoRepository) SavePayDes(entity *entity.PayDesEn) (string, error) {
+func (p *PayDesMgoRepository) SavePayDes(entity *entity.PayDesEn) (string, error) {
 	var (
 		do *do.PayDesDo
 	)
@@ -26,14 +26,22 @@ func (p PayDesMgoRepository) SavePayDes(entity *entity.PayDesEn) (string, error)
 	return p.mgo.InsertOne(do)
 }
 
-func (p PayDesMgoRepository) DeletePayDes(s string) error {
+func (p *PayDesMgoRepository) UpdatePayDes(filter types.B, update types.B) error {
+	if _, err := p.mgo.Update(filter, update); err != nil {
+		log.Logger().Error("UpdatePayDes Error, %v", err)
+		return err
+	}
+	return nil
+}
+
+func (p *PayDesMgoRepository) DeletePayDes(s string) error {
 	if _, err := p.mgo.UpdateOne(types.B{"_id": s}, types.B{"isDeleted": 1}); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (p PayDesMgoRepository) GetPayDesById(s string) (*do.PayDesDo, error) {
+func (p *PayDesMgoRepository) GetPayDesById(s string) (*do.PayDesDo, error) {
 	var (
 		err error
 		do  do.PayDesDo
@@ -45,7 +53,7 @@ func (p PayDesMgoRepository) GetPayDesById(s string) (*do.PayDesDo, error) {
 	return &do, nil
 }
 
-func (p PayDesMgoRepository) ListPayDesBy(m map[string]interface{}) ([]*do.PayDesDo, error) {
+func (p *PayDesMgoRepository) ListPayDesBy(m map[string]interface{}) ([]*do.PayDesDo, error) {
 	var (
 		err error
 		dos []*do.PayDesDo
@@ -57,7 +65,7 @@ func (p PayDesMgoRepository) ListPayDesBy(m map[string]interface{}) ([]*do.PayDe
 	return dos, nil
 }
 
-func (p PayDesMgoRepository) ListPayDesPageBy(skip, limit int64, sort, filter interface{}) ([]*do.PayDesDo, error) {
+func (p *PayDesMgoRepository) ListPayDesPageBy(skip, limit int64, sort, filter interface{}) ([]*do.PayDesDo, error) {
 	var (
 		err error
 		dos []*do.PayDesDo
