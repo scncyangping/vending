@@ -1,4 +1,4 @@
-package auth
+package mgoRepo
 
 import (
 	"vending/app/domain/entity"
@@ -16,11 +16,8 @@ type UserMgoRepository struct {
 	mgo *mongo.MgoV
 }
 
-// NewUserRepository wire
-func NewUserRepository() *UserMgoRepository {
-	return &UserMgoRepository{
-		mgo: mongo.OpCn("user"),
-	}
+func NewUserRepository(m *mongo.MgoV) *UserMgoRepository {
+	return &UserMgoRepository{mgo: m}
 }
 
 func (u *UserMgoRepository) SaveUser(entity *entity.UserEn) (string, error) {
