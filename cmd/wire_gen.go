@@ -14,14 +14,12 @@ import (
 	"vending/app/domain/service"
 	"vending/app/infrastructure/config"
 	"vending/app/infrastructure/repository"
-	"vending/app/infrastructure/repository/auth"
 )
 
 // Injectors from wire.go:
 
 func NewHandler() *server.Handlers {
-	userMgoRepository := auth.NewUserRepository()
-	repositoryRepository := repository.NewRepository(userMgoRepository)
+	repositoryRepository := repository.NewRepository()
 	serviceService := service.NewService(repositoryRepository)
 	authSrvImp := impl.NewAuthSrvImp(serviceService)
 	authHandler := business.NewAuthHandler(authSrvImp)
@@ -31,4 +29,4 @@ func NewHandler() *server.Handlers {
 
 // wire.go:
 
-var providerSet = wire.NewSet(config.NewConfig, auth.NewUserRepository, repository.NewRepository, service.NewService, impl.NewAuthSrvImp, business.NewAuthHandler, server.NewHandlers)
+var providerSet = wire.NewSet(config.NewConfig, repository.NewRepository, service.NewService, impl.NewAuthSrvImp, business.NewAuthHandler, server.NewHandlers)

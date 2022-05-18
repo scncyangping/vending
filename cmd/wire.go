@@ -9,16 +9,16 @@ import (
 	"vending/app/adapter/http/handlers/business"
 	"vending/app/adapter/http/server"
 	"vending/app/application/service/impl"
+	"vending/app/domain/aggregate"
 	"vending/app/domain/service"
 	"vending/app/infrastructure/config"
 	"vending/app/infrastructure/repository"
-	"vending/app/infrastructure/repository/auth"
 )
 
 var providerSet = wire.NewSet(
 	config.NewConfig,
-	auth.NewUserRepository,
 	repository.NewRepository,
+	aggregate.NewAggregate,
 	service.NewService,
 	impl.NewAuthSrvImp,
 	business.NewAuthHandler,
