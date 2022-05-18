@@ -1,6 +1,7 @@
 package service
 
 import (
+	"vending/app/domain/dto"
 	"vending/app/domain/entity"
 	"vending/app/domain/service/imp/auth"
 	"vending/app/domain/vo"
@@ -10,6 +11,10 @@ import (
 type AuthService interface {
 	LoginByName(name, pwd string) (*vo.UserVo, error)
 	Register(*entity.UserEn) (string, error)
+}
+
+type CategoryService interface {
+	SaveCategory(req *dto.CategorySaveReq) (string, error)
 }
 
 type Service struct {

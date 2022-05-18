@@ -1,12 +1,8 @@
 package types
 
-import (
-	"go.mongodb.org/mongo-driver/bson"
-)
-
 type AuthenticationType string
 
-type B bson.M
+type B map[string]interface{}
 
 const (
 	JWT AuthenticationType = "JWT"
@@ -31,6 +27,13 @@ var PayStatusM = map[PayStatus]string{
 	PayPaid:   "已支付",
 	PayCancel: "已取消",
 }
+
+type BeneficiaryType uint8 // 收款方式
+
+const (
+	BfAlipayFace BeneficiaryType = 1 << iota // 支付宝当面付
+	BfWechat
+)
 
 type BeneficiaryStatus uint8 // 收款方式状态
 

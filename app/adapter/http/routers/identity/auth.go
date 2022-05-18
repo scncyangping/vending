@@ -7,7 +7,7 @@ import (
 )
 
 func InitAuthRoute(router *gin.RouterGroup, handler *business.AuthHandler) {
-	authRouter := router.Group("/auth")
+	authRouter := router.Group("/base")
 	auth(authRouter, handler)
 	// 鉴权中间件
 	router.Use(handler.TokenAuthMiddleware())

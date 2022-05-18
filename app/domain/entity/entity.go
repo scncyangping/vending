@@ -30,12 +30,13 @@ type CommodityEn struct {
 	Type         uint8                 `json:"type"`         // 商品类型
 	ImageUrl     string                `json:"imageUrl"`     // 图片链接
 	Status       types.CommodityStatus `json:"status"`       // 商品状态
+	CategoryId   string                `json:"categoryId"`   //  商品分类Id
 }
 
 // BeneficiaryEn 收款信息
 type BeneficiaryEn struct {
 	Id     string                  `json:"id"`
-	Type   string                  `json:"type"`   // 支付类型
+	Type   types.BeneficiaryType   `json:"type"`   // 支付类型
 	Status types.BeneficiaryStatus `json:"status"` // 状态：正常使用、停用、冻结
 	Data   interface{}             `json:"data"`   // 支付使用数据：各个支付方式需要信息
 	UserId string                  `json:"userId"` // 收款人Id,必是注册用户
@@ -43,11 +44,12 @@ type BeneficiaryEn struct {
 
 // PayDesEn 支付信息
 type PayDesEn struct {
-	Id        string          `json:"id"`
-	PayUser   string          `json:"payUser"`   // 支付人
-	PayAmount float64         `json:"payAmount"` // 支付金额
-	PayStatus types.PayStatus `json:"payStatus"` // 支付状态
-	PayLog    []string        `json:"payLog"`    // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
+	Id          string          `json:"id"`
+	PayUser     string          `json:"payUser"`     // 支付人
+	PayAmount   float64         `json:"payAmount"`   // 支付金额
+	PayStatus   types.PayStatus `json:"payStatus"`   // 支付状态
+	PayLog      []string        `json:"payLog"`      // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
+	PayerSubObj obj.PayerSubObj `json:"payerSubObj"` // 支付额外信息
 }
 
 // OrderEn 订单
@@ -69,9 +71,9 @@ type StockEn struct {
 
 // CategoryEn 类别
 type CategoryEn struct {
-	Id       string `json:"id"`
-	Name     string `json:"name" `     // 类别名称
-	PId      string `json:"pId" `      // 父类别Id
-	StockNum int    `json:"stockNum" ` // 库存数量 用库存数量去锁定待支付订单
-	SellType uint8  `json:"sellType" ` // 0 一次性 1 可重复使用
+	Id       string         `json:"id"`
+	Name     string         `json:"name" `     // 类别名称
+	PId      string         `json:"pId" `      // 父类别Id
+	StockNum int            `json:"stockNum" ` // 库存数量 用库存数量去锁定待支付订单
+	SellType types.SellType `json:"sellType" ` // 0 一次性 1 可重复使用
 }
