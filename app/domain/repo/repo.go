@@ -12,8 +12,8 @@ type UserRepo interface {
 	DeleteUser(string) error
 	GetUserById(string) (*do.UserDo, error)
 	GetUserByName(string) (*do.UserDo, error)
-	ListUserBy(map[string]interface{}) ([]*do.UserDo, error)
-	ListUserPageBy(skip, limit int64, sort, filter interface{}) ([]*do.UserDo, error)
+	ListUserBy(map[string]any) ([]*do.UserDo, error)
+	ListUserPageBy(skip, limit int64, sort, filter any) ([]*do.UserDo, error)
 }
 
 type RoleRepo interface {
@@ -22,7 +22,7 @@ type RoleRepo interface {
 	DeleteRole(string) error
 	GetRoleById(string) (*do.RoleDo, error)
 	ListRoleBy(types.B) ([]*do.RoleDo, error)
-	ListRolePageBy(skip, limit int64, sort, filter interface{}) ([]*do.RoleDo, error)
+	ListRolePageBy(skip, limit int64, sort, filter any) ([]*do.RoleDo, error)
 }
 
 type CommodityRepo interface {
@@ -31,7 +31,7 @@ type CommodityRepo interface {
 	DeleteCommodity(string) error
 	GetCommodityById(string) (*do.CommodityDo, error)
 	ListCommodityBy(types.B) ([]*do.CommodityDo, error)
-	ListCommodityPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CommodityDo, error)
+	ListCommodityPageBy(skip, limit int64, sort, filter any) ([]*do.CommodityDo, error)
 }
 
 type OrderRepo interface {
@@ -40,7 +40,7 @@ type OrderRepo interface {
 	DeleteOrder(string) error
 	GetOrderById(string) (*do.OrderDo, error)
 	ListOrderBy(types.B) ([]*do.OrderDo, error)
-	ListOrderPageBy(skip, limit int64, sort, filter interface{}) ([]*do.OrderDo, error)
+	ListOrderPageBy(skip, limit int64, sort, filter any) ([]*do.OrderDo, error)
 }
 
 type OrderTempRepo interface {
@@ -49,7 +49,7 @@ type OrderTempRepo interface {
 	DeleteOrder(string) error
 	GetOrderById(string) (*do.OrderDo, error)
 	ListOrderBy(types.B) ([]*do.OrderDo, error)
-	ListOrderPageBy(skip, limit int64, sort, filter interface{}) ([]*do.OrderDo, error)
+	ListOrderPageBy(skip, limit int64, sort, filter any) ([]*do.OrderDo, error)
 }
 
 type StockRepo interface {
@@ -58,7 +58,7 @@ type StockRepo interface {
 	DeleteStock(string) error
 	GetStockById(string) (*do.StockDo, error)
 	ListStockBy(types.B) ([]*do.StockDo, error)
-	ListStockPageBy(skip, limit int64, sort, filter interface{}) ([]*do.StockDo, error)
+	ListStockPageBy(skip, limit int64, sort, filter any) ([]*do.StockDo, error)
 }
 
 type CategoryRepo interface {
@@ -69,7 +69,7 @@ type CategoryRepo interface {
 	GetCategoryById(string) (*do.CategoryDo, error)
 	GetCategoryByCategoryName(string) (*do.CategoryDo, error)
 	ListCategoryBy(types.B) ([]*do.CategoryDo, error)
-	ListCategoryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CategoryDo, error)
+	ListCategoryPageBy(skip, limit int64, sort, filter any) ([]*do.CategoryDo, error)
 }
 
 type BeneficiaryRepo interface {
@@ -78,7 +78,7 @@ type BeneficiaryRepo interface {
 	DeleteBeneficiary(string) error
 	GetBeneficiaryById(string) (*do.BeneficiaryDo, error)
 	ListBeneficiaryBy(types.B) ([]*do.BeneficiaryDo, error)
-	ListBeneficiaryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.BeneficiaryDo, error)
+	ListBeneficiaryPageBy(skip, limit int64, sort, filter any) ([]*do.BeneficiaryDo, error)
 }
 
 type PayDesRepo interface {
@@ -87,5 +87,5 @@ type PayDesRepo interface {
 	DeletePayDes(string) error
 	GetPayDesById(string) (*do.PayDesDo, error)
 	ListPayDesBy(types.B) ([]*do.PayDesDo, error)
-	ListPayDesPageBy(skip, limit int64, sort, filter interface{}) ([]*do.PayDesDo, error)
+	ListPayDesPageBy(skip, limit int64, sort, filter any) ([]*do.PayDesDo, error)
 }

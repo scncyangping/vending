@@ -15,6 +15,6 @@ func (c *CommoditySrvImp) Delete(strings []string) error {
 	panic("implement me")
 }
 
-func (c *CommoditySrvImp) Import(i interface{}) (count int, err error) {
+func (c *CommoditySrvImp) Import(i any) (count int, err error) {
 	panic("implement me")
 }

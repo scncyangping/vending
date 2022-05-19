@@ -24,8 +24,8 @@ type CategorySaveReq struct {
 }
 
 type StockSaveReq struct {
-	Data       interface{} `json:"data"`       // 库存内容
-	CategoryId string      `json:"categoryId"` // 关联类别Id
+	Data       any    `json:"data"`       // 库存内容
+	CategoryId string `json:"categoryId"` // 关联类别Id
 }
 
 type CreateTemItem struct {
@@ -43,5 +43,5 @@ type CreateTemOrder struct {
 // TemOrderPayDto 临时订单支付信息
 type TemOrderPayDto struct {
 	Type types.BeneficiaryType `json:"type"`
-	Data interface{}           `json:"data"` // 具体支付数据，比如支付宝当面付就为付款url地址
+	Data any                   `json:"data"` // 具体支付数据，比如支付宝当面付就为付款url地址
 }

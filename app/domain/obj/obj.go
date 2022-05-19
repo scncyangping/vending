@@ -13,3 +13,10 @@ type PayerSubObj struct {
 	Email       string `json:"email"`       // 邮箱
 	PayerRemark string `json:"payerRemark"` // 支付备注
 }
+
+// OrderAlipayFaceBody 支付宝面对面支付
+type OrderAlipayFaceBody struct {
+	OutTradeNo  string  `json:"out_trade_no"` // 商户订单号
+	Subject     string  `json:"subject"`      // 订单标题
+	TotalAmount float64 `json:"total_amount"` // 总金额
+}

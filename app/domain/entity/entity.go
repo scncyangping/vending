@@ -38,7 +38,7 @@ type BeneficiaryEn struct {
 	Id     string                  `json:"id"`
 	Type   types.BeneficiaryType   `json:"type"`   // 支付类型
 	Status types.BeneficiaryStatus `json:"status"` // 状态：正常使用、停用、冻结
-	Data   interface{}             `json:"data"`   // 支付使用数据：各个支付方式需要信息
+	Data   any                     `json:"data"`   // 支付使用数据：各个支付方式需要信息
 	UserId string                  `json:"userId"` // 收款人Id,必是注册用户
 }
 
@@ -64,7 +64,7 @@ type OrderEn struct {
 // StockEn 库存
 type StockEn struct {
 	Id         string            `json:"id"`
-	Data       interface{}       `json:"data"`       // 库存内容
+	Data       any               `json:"data"`       // 库存内容
 	CategoryId string            `json:"categoryId"` // 关联类别Id
 	Status     types.StockStatus `json:"status"`
 }

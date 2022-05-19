@@ -1,7 +1,6 @@
 package aggregate
 
 import (
-	"vending/app/domain/dto"
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
 )
@@ -29,9 +28,11 @@ func NewOrderAggregate(orderRepo repo.OrderRepo, orderTempRepo repo.OrderTempRep
 			payDesRepo:    payDesRepo,
 		},
 	}
+
 }
 
 // CreateTemOrder 创建临时订单
-func (o *OrderAggregate) CreateTemOrder(dto *dto.CreateTemOrder) {
-	//
+// 创建订单仅需支付信息金额
+func (o *OrderAggregate) CreateTemOrder(commodityUserId string) {
+
 }

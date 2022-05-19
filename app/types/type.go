@@ -2,7 +2,7 @@ package types
 
 type AuthenticationType string
 
-type B map[string]interface{}
+type B map[string]any
 
 const (
 	JWT AuthenticationType = "JWT"
@@ -15,17 +15,19 @@ const (
 	UserNormal UserStatus = 1 << iota
 	UserFrozen
 
-	PayCreate PayStatus = 1 << iota
-	PayPaid
-	PayCancel
+	PayWaitBuyerPay PayStatus = 1 << iota
+	PayClosed
+	PaySuccess
+	PayFinished
 )
 
 type PayStatus uint8 // 支付状态
 
 var PayStatusM = map[PayStatus]string{
-	PayCreate: "待支付",
-	PayPaid:   "已支付",
-	PayCancel: "已取消",
+	PayWaitBuyerPay: "待支付",
+	PaySuccess:      "已支付",
+	PayClosed:       "已取消",
+	PayFinished:     "已完成",
 }
 
 type BeneficiaryType uint8 // 收款方式

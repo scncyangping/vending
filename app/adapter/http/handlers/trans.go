@@ -60,12 +60,12 @@ func StatusText(code ResultCode) ResultMsg {
 }
 
 type Result struct {
-	Code ResultCode  `json:"code"`
-	Msg  ResultMsg   `json:"msg"`
-	Data interface{} `json:"data"`
+	Code ResultCode `json:"code"`
+	Msg  ResultMsg  `json:"msg"`
+	Data any        `json:"data"`
 }
 
-func (h *Handler) SendSuccess(ctx *gin.Context, arg ...interface{}) {
+func (h *Handler) SendSuccess(ctx *gin.Context, arg ...any) {
 	var (
 		result   Result
 		actionId = ctx.GetString("ActionId")
@@ -76,7 +76,7 @@ func (h *Handler) SendSuccess(ctx *gin.Context, arg ...interface{}) {
 	ctx.JSON(StatusOK, result)
 }
 
-func (h *Handler) SendFailure(ctx *gin.Context, arg ...interface{}) {
+func (h *Handler) SendFailure(ctx *gin.Context, arg ...any) {
 	var (
 		result   Result
 		actionId = ctx.GetString("ActionId")
@@ -88,7 +88,7 @@ func (h *Handler) SendFailure(ctx *gin.Context, arg ...interface{}) {
 	ctx.JSON(StatusOK, result)
 }
 
-func (h *Handler) buildResult(ok bool, result *Result, arg ...interface{}) {
+func (h *Handler) buildResult(ok bool, result *Result, arg ...any) {
 	var (
 		code, msg bool
 	)

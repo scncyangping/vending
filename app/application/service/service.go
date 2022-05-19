@@ -11,7 +11,7 @@ type AuthSrv interface {
 }
 
 type CommoditySrv interface {
-	Get(string) interface{}
+	Get(string) any
 	// Up 上架商品
 	Up([]string) error
 	// Down 下架商品
@@ -19,12 +19,12 @@ type CommoditySrv interface {
 	// Delete 删除商品
 	Delete([]string) error
 	// Import 导入商品
-	Import(interface{}) (count int, err error)
+	Import(any) (count int, err error)
 }
 
 type OrderSrv interface {
 	// CreateOrder 创建订单 返回付款url
-	CreateOrder(interface{}) (string, error)
+	CreateOrder(any) (string, error)
 }
 
 //

@@ -135,7 +135,7 @@ func (c *InventoryAggregate) UpdateCategory(req *dto.CategorySaveReq) error {
 		return errors.New("该分类已存在")
 	}
 
-	m := map[string]interface{}{}
+	m := map[string]any{}
 
 	if req.Name != constants.EmptyStr {
 		m["name"] = req.Name
