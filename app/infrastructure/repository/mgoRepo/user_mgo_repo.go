@@ -63,7 +63,7 @@ func (u *UserMgoRepository) GetUserById(s string) (*do.UserDo, error) {
 	return &users, nil
 }
 
-func (u *UserMgoRepository) ListUserBy(m map[string]interface{}) ([]*do.UserDo, error) {
+func (u *UserMgoRepository) ListUserBy(m map[string]any) ([]*do.UserDo, error) {
 	var (
 		err   error
 		users []*do.UserDo
@@ -75,7 +75,7 @@ func (u *UserMgoRepository) ListUserBy(m map[string]interface{}) ([]*do.UserDo, 
 	return users, nil
 }
 
-func (u *UserMgoRepository) ListUserPageBy(skip, limit int64, sort, filter interface{}) ([]*do.UserDo, error) {
+func (u *UserMgoRepository) ListUserPageBy(skip, limit int64, sort, filter any) ([]*do.UserDo, error) {
 	var (
 		err   error
 		users []*do.UserDo

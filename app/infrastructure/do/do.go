@@ -72,7 +72,7 @@ type BeneficiaryDo struct {
 	Do
 	Type   types.BeneficiaryType   `json:"type" bson:"type"`     // 支付类型
 	Status types.BeneficiaryStatus `json:"status" bson:"status"` // 状态：正常使用、停用、冻结
-	Data   interface{}             `json:"data" bson:"data"`     // 支付使用数据：各个支付方式需要信息
+	Data   any                     `json:"data" bson:"data"`     // 支付使用数据：各个支付方式需要信息
 	UserId string                  `json:"userId" bson:"userId"` // 收款人Id,必是注册用户
 }
 
@@ -89,7 +89,7 @@ type OrderDo struct {
 // StockDo 库存
 type StockDo struct {
 	Do
-	Data       interface{}       `json:"data" bson:"data"`             // 库存内容
+	Data       any               `json:"data" bson:"data"`             // 库存内容
 	CategoryId string            `json:"categoryId" bson:"categoryId"` // 关联类别Id
 	OrderId    string            `json:"orderId" bson:"orderId"`       // 关联订单Id
 	Status     types.StockStatus `json:"status" bson:"status"`         // 状态 1 待使用  2 已使用

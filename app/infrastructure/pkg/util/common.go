@@ -22,7 +22,7 @@ const (
 	Undefined
 )
 
-func IsExpectType(i interface{}) int {
+func IsExpectType(i any) int {
 	if i == nil {
 		return Nil
 	}
@@ -53,7 +53,7 @@ func IsExpectType(i interface{}) int {
 /**
  * 判断obj是否在target中，target支持的类型array,slice,map
  */
-func Contains(obj interface{}, target interface{}) bool {
+func Contains(obj any, target any) bool {
 	if target == nil {
 		return false
 	}
@@ -77,16 +77,16 @@ func Contains(obj interface{}, target interface{}) bool {
 /**
  * 深度拷贝
  */
-func DeepCopy(value interface{}) interface{} {
-	if valueMap, ok := value.(map[string]interface{}); ok {
-		newMap := make(map[string]interface{})
+func DeepCopy(value any) any {
+	if valueMap, ok := value.(map[string]any); ok {
+		newMap := make(map[string]any)
 		for k, v := range valueMap {
 			newMap[k] = DeepCopy(v)
 		}
 
 		return newMap
-	} else if valueSlice, ok := value.([]interface{}); ok {
-		newSlice := make([]interface{}, len(valueSlice))
+	} else if valueSlice, ok := value.([]any); ok {
+		newSlice := make([]any, len(valueSlice))
 		for k, v := range valueSlice {
 			newSlice[k] = DeepCopy(v)
 		}
@@ -106,8 +106,8 @@ func DeepCopy(value interface{}) interface{} {
  * @param   data 	原数据
  * @param field   使用字段
  */
-func FiltrationData(data map[string]interface{}, field []string) map[string]interface{} {
-	resultMap := make(map[string]interface{})
+func FiltrationData(data map[string]any, field []string) map[string]any {
+	resultMap := make(map[string]any)
 	if data == nil || field == nil || len(data) < 1 || len(field) < 1 {
 		return nil
 	}

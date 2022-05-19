@@ -21,8 +21,8 @@ func (p *PayDesMgoRepository) SavePayDes(entity *entity.PayDesEn) (string, error
 		do *do.PayDesDo
 	)
 	util.StructCopy(do, entity)
-	do.CreateTime = util.NowTimestamp()
-	do.UpdateTime = util.NowTimestamp()
+	//do.CreateTime = util.NowTimestamp()
+	//do.UpdateTime = util.NowTimestamp()
 	return p.mgo.InsertOne(do)
 }
 
@@ -65,7 +65,7 @@ func (p *PayDesMgoRepository) ListPayDesBy(m types.B) ([]*do.PayDesDo, error) {
 	return dos, nil
 }
 
-func (p *PayDesMgoRepository) ListPayDesPageBy(skip, limit int64, sort, filter interface{}) ([]*do.PayDesDo, error) {
+func (p *PayDesMgoRepository) ListPayDesPageBy(skip, limit int64, sort, filter any) ([]*do.PayDesDo, error) {
 	var (
 		err error
 		dos []*do.PayDesDo

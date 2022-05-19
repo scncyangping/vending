@@ -66,7 +66,7 @@ func (c *CommodityMgoRepository) ListCommodityBy(m types.B) ([]*do.CommodityDo, 
 	return dos, nil
 }
 
-func (c *CommodityMgoRepository) ListCommodityPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CommodityDo, error) {
+func (c *CommodityMgoRepository) ListCommodityPageBy(skip, limit int64, sort, filter any) ([]*do.CommodityDo, error) {
 	var (
 		err error
 		dos []*do.CommodityDo

@@ -187,7 +187,7 @@ func PostByType(url, json, cType string) (resBody string, err error) {
 	return
 }
 
-func PostR(url, cType string, sendData map[string]interface{}) (map[string]interface{}, error) {
+func PostR(url, cType string, sendData map[string]any) (map[string]any, error) {
 	// 转换参数
 	fData, error := json.Marshal(sendData)
 	if error != nil {
@@ -211,7 +211,7 @@ func PostR(url, cType string, sendData map[string]interface{}) (map[string]inter
 	}
 	resBody := string(resBuff)
 
-	dat := make(map[string]interface{})
+	dat := make(map[string]any)
 
 	error = json.Unmarshal([]byte(resBody), &dat)
 	if error != nil {

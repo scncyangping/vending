@@ -40,7 +40,7 @@ func GenerateToken(name string) (string, error) {
 
 func ParseToken(token string) (*obj.Claims, error) {
 	// 用于解析鉴权的声明，方法内部主要是具体的解码和校验的过程，最终返回*Token
-	tokenClaims, err := jwt.ParseWithClaims(token, &obj.Claims{}, func(token *jwt.Token) (interface{}, error) {
+	tokenClaims, err := jwt.ParseWithClaims(token, &obj.Claims{}, func(token *jwt.Token) (any, error) {
 		return config.Secret, nil
 	})
 

@@ -54,7 +54,7 @@ func (c *Config) new() *mongo.Client {
 	defer cancel()
 	client, err := mongo.Connect(ctx, opt)
 	if err != nil {
-		panic(err.(interface{}))
+		panic(err.(any))
 	}
 	return client
 }
@@ -79,7 +79,7 @@ func OpCn(defaultCol string) *MgoV {
 }
 
 // InsertOne 插入单个文档
-func (m *MgoV) InsertOne(value interface{}) (string, error) {
+func (m *MgoV) InsertOne(value any) (string, error) {
 	collection := getCollection(m)
 
 	if insertResult, err := collection.InsertOne(context.TODO(), value); err != nil {
@@ -97,7 +97,7 @@ func getCollection(m *MgoV) *mongo.Collection {
 }
 
 // InsertMany 插入多个文档
-func (m *MgoV) InsertMany(values []interface{}) (int, error) {
+func (m *MgoV) InsertMany(values []any) (int, error) {
 	collection := getCollection(m)
 	if result, err := collection.InsertMany(context.TODO(), values); err != nil {
 		return -1, err
@@ -107,7 +107,7 @@ func (m *MgoV) InsertMany(values []interface{}) (int, error) {
 }
 
 // Delete 删除
-func (m *MgoV) Delete(b interface{}) (int64, error) {
+func (m *MgoV) Delete(b any) (int64, error) {
 	collection := getCollection(m)
 	if count, err := collection.DeleteMany(context.TODO(), b); err != nil {
 		return -1, err
@@ -117,7 +117,7 @@ func (m *MgoV) Delete(b interface{}) (int64, error) {
 }
 
 // DeleteOne 删除满足条件的一条数据
-func (m *MgoV) DeleteOne(filter interface{}) (int64, error) {
+func (m *MgoV) DeleteOne(filter any) (int64, error) {
 	collection := getCollection(m)
 	if count, err := collection.DeleteOne(context.TODO(), filter); err != nil {
 		return -1, err
@@ -127,7 +127,7 @@ func (m *MgoV) DeleteOne(filter interface{}) (int64, error) {
 }
 
 // Update 更新文档
-func (m *MgoV) Update(filter, update interface{}) (int64, error) {
+func (m *MgoV) Update(filter, update any) (int64, error) {
 	collection := getCollection(m)
 	if result, err := collection.UpdateMany(context.TODO(), filter, update); err != nil {
 		return -1, err
@@ -137,7 +137,7 @@ func (m *MgoV) Update(filter, update interface{}) (int64, error) {
 }
 
 // UpdateOne 更新单个文档
-func (m *MgoV) UpdateOne(filter, update interface{}) (int64, error) {
+func (m *MgoV) UpdateOne(filter, update any) (int64, error) {
 	collection := getCollection(m)
 	if result, err := collection.UpdateOne(context.TODO(), filter, update); err != nil {
 		return -1, err
@@ -147,7 +147,7 @@ func (m *MgoV) UpdateOne(filter, update interface{}) (int64, error) {
 }
 
 // FindOne 查询单个文档
-func (m *MgoV) FindOne(b interface{}, target interface{}) error {
+func (m *MgoV) FindOne(b any, target any) error {
 	var err error
 	collection := getCollection(m)
 	addIsDelFilter(b)
@@ -160,14 +160,14 @@ func (m *MgoV) FindOne(b interface{}, target interface{}) error {
 	return err
 }
 
-func addIsDelFilter(b interface{}) {
+func addIsDelFilter(b any) {
 	if _, ok := b.(types.B)["isDeleted"]; !ok {
 		b.(types.B)["isDeleted"] = 0
 	}
 }
 
 // Find 查询文档
-func (m *MgoV) Find(filter interface{}, tSlice interface{}) error {
+func (m *MgoV) Find(filter any, tSlice any) error {
 	var err error
 
 	collection := getCollection(m)
@@ -190,7 +190,7 @@ func (m *MgoV) Count() (int64, error) {
 // Skip 跳过
 // Limit 读取数量
 // sort 1 ，-1 . 1 为升序 ， -1 为降序
-func (m *MgoV) FindBy(skip, limit int64, sort, filter interface{}, tSlice interface{}) error {
+func (m *MgoV) FindBy(skip, limit int64, sort, filter any, tSlice any) error {
 	var err error
 
 	collection := getCollection(m)

@@ -90,7 +90,7 @@ func (c *CategoryMgoRepository) ListCategoryBy(m types.B) ([]*do.CategoryDo, err
 	return cgs, nil
 }
 
-func (c *CategoryMgoRepository) ListCategoryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.CategoryDo, error) {
+func (c *CategoryMgoRepository) ListCategoryPageBy(skip, limit int64, sort, filter any) ([]*do.CategoryDo, error) {
 	var (
 		err error
 		cgs []*do.CategoryDo

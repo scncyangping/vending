@@ -13,8 +13,8 @@ var tConfig = &Config{
 }
 
 func TestMgo_InsertOne(t *testing.T) {
-	Init(tConfig)
-	OpCn("user").InsertOne(map[string]interface{}{
+	New(tConfig)
+	OpCn("user").InsertOne(map[string]any{
 		"_id":  "123",
 		"name": "name",
 		"age":  uint8(2),
@@ -22,10 +22,10 @@ func TestMgo_InsertOne(t *testing.T) {
 }
 
 func TestMgo_InsertMany(t *testing.T) {
-	Init(tConfig)
-	arr := make([]interface{}, 0)
+	New(tConfig)
+	arr := make([]any, 0)
 	for i := 0; i < 5; i++ {
-		arr = append(arr, map[string]interface{}{
+		arr = append(arr, map[string]any{
 			"_id":  "123",
 			"name": "name",
 			"age":  i,
@@ -35,29 +35,29 @@ func TestMgo_InsertMany(t *testing.T) {
 }
 
 func TestMgo_Delete(t *testing.T) {
-	Init(tConfig)
-	OpCn("user").Delete(map[string]interface{}{
-		"age": map[string]interface{}{
+	New(tConfig)
+	OpCn("user").Delete(map[string]any{
+		"age": map[string]any{
 			"$in": []int{2},
 		},
 	})
 }
 
 func TestMgo_Update(t *testing.T) {
-	Init(tConfig)
-	OpCn("user").Update(map[string]interface{}{
-		"age": map[string]interface{}{
+	New(tConfig)
+	OpCn("user").Update(map[string]any{
+		"age": map[string]any{
 			"$in": []int{2},
 		},
-	}, map[string]interface{}{
-		"$set": map[string]interface{}{
+	}, map[string]any{
+		"$set": map[string]any{
 			"isUpdate": true,
 		},
 	})
 }
 
 func TestMgo_FindOne(t *testing.T) {
-	Init(tConfig)
+	New(tConfig)
 	//U := &User{}
 	var U User
 	//U := new(User)
@@ -65,8 +65,8 @@ func TestMgo_FindOne(t *testing.T) {
 	//(*U).Age = 2222
 	fmt.Println(&U)
 	fmt.Println(U)
-	//U := make(map[string]interface{})
-	e := OpCn("user").FindOne(map[string]interface{}{
+	//U := make(map[string]any)
+	e := OpCn("user").FindOne(map[string]any{
 		"age": 1,
 	}, &U)
 	fmt.Println(U)
@@ -82,10 +82,10 @@ type User struct {
 }
 
 func TestMgo_Find(t *testing.T) {
-	Init(tConfig)
+	New(tConfig)
 	//U := make([]User, 0)
 	U := new([]*User)
-	OpCn("user").Find(map[string]interface{}{
+	OpCn("user").Find(map[string]any{
 		"age": 1,
 	}, U)
 	fmt.Printf("%v", U)
@@ -95,15 +95,15 @@ func TestMgo_Find(t *testing.T) {
 }
 
 func TestMgo_Count(t *testing.T) {
-	Init(tConfig)
+	New(tConfig)
 	fmt.Println(OpCn("user").Count())
 }
 
 func TestMgo_FindBy(t *testing.T) {
-	Init(tConfig)
+	New(tConfig)
 	var uList []*User
 	OpCn("user").FindBy(0, 2,
-		map[string]interface{}{"age": 1},
-		map[string]interface{}{"age": map[string]interface{}{"$gte": 1}}, &uList)
+		map[string]any{"age": 1},
+		map[string]any{"age": map[string]any{"$gte": 1}}, &uList)
 	fmt.Println(uList)
 }

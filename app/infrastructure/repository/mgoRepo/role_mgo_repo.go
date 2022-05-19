@@ -65,7 +65,7 @@ func (r *RoleMgoRepository) ListRoleBy(m types.B) ([]*do.RoleDo, error) {
 	return dos, nil
 }
 
-func (r *RoleMgoRepository) ListRolePageBy(skip, limit int64, sort, filter interface{}) ([]*do.RoleDo, error) {
+func (r *RoleMgoRepository) ListRolePageBy(skip, limit int64, sort, filter any) ([]*do.RoleDo, error) {
 	var (
 		err error
 		dos []*do.RoleDo

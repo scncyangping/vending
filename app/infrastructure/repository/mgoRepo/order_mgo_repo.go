@@ -65,7 +65,7 @@ func (o *OrderMgoRepository) ListOrderBy(m types.B) ([]*do.OrderDo, error) {
 	return dos, nil
 }
 
-func (o *OrderMgoRepository) ListOrderPageBy(skip, limit int64, sort, filter interface{}) ([]*do.OrderDo, error) {
+func (o *OrderMgoRepository) ListOrderPageBy(skip, limit int64, sort, filter any) ([]*do.OrderDo, error) {
 	var (
 		err error
 		dos []*do.OrderDo

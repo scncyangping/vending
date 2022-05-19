@@ -6,10 +6,10 @@ import (
 	"vending/app/infrastructure/pkg/log"
 )
 
-func StringToMap(base map[string]string) map[string]interface{} {
-	resultMap := make(map[string]interface{})
+func StringToMap(base map[string]string) map[string]any {
+	resultMap := make(map[string]any)
 	for k, v := range base {
-		var dat map[string]interface{}
+		var dat map[string]any
 		if err := json.Unmarshal([]byte(v), &dat); err == nil {
 			resultMap[k] = dat
 		} else {
@@ -19,11 +19,11 @@ func StringToMap(base map[string]string) map[string]interface{} {
 	return resultMap
 }
 
-func StructToMap(obj interface{}) (d map[string]interface{}, err error) {
+func StructToMap(obj any) (d map[string]any, err error) {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)
 
-	d = make(map[string]interface{})
+	d = make(map[string]any)
 	for i := 0; i < t.NumField(); i++ {
 		d[t.Field(i).Name] = v.Field(i).Interface()
 	}
@@ -31,7 +31,7 @@ func StructToMap(obj interface{}) (d map[string]interface{}, err error) {
 	return
 }
 
-func StructCopy(DstStructPtr interface{}, SrcStructPtr interface{}) {
+func StructCopy(DstStructPtr any, SrcStructPtr any) {
 	a := reflect.ValueOf(SrcStructPtr)
 	b := reflect.ValueOf(DstStructPtr)
 	c := reflect.TypeOf(SrcStructPtr)

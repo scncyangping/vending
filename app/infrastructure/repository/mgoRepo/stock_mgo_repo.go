@@ -65,7 +65,7 @@ func (s *StockMgoRepository) ListStockBy(m types.B) ([]*do.StockDo, error) {
 	return dos, nil
 }
 
-func (s *StockMgoRepository) ListStockPageBy(skip, limit int64, sort, filter interface{}) ([]*do.StockDo, error) {
+func (s *StockMgoRepository) ListStockPageBy(skip, limit int64, sort, filter any) ([]*do.StockDo, error) {
 	var (
 		err error
 		dos []*do.StockDo

@@ -70,7 +70,7 @@ func (b *BeneficiaryMgoRepository) ListBeneficiaryBy(m types.B) ([]*do.Beneficia
 	return bfs, nil
 }
 
-func (b *BeneficiaryMgoRepository) ListBeneficiaryPageBy(skip, limit int64, sort, filter interface{}) ([]*do.BeneficiaryDo, error) {
+func (b *BeneficiaryMgoRepository) ListBeneficiaryPageBy(skip, limit int64, sort, filter any) ([]*do.BeneficiaryDo, error) {
 	var (
 		err error
 		bfs []*do.BeneficiaryDo
