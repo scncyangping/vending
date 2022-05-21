@@ -20,14 +20,14 @@ type AliFaceToFace struct {
 	AliPayPublicKey string // 支付公钥
 }
 
-func New(appId, appPrivateKey, aliPayPublicKey, notifyUrl string) (*AliFaceToFace, error) {
+func NewAlipayFaceToFace(appId, appPrivateKey, aliPayPublicKey, notifyUrl string) (*AliFaceToFace, error) {
 	var (
 		err    error
 		client *alipay.Client
 	)
 	// 普通公钥方式
 	// appId 和 应用私钥
-	if client, err = alipay.New(appId, appPrivateKey, false); err != nil {
+	if client, err = alipay.New(appId, appPrivateKey, true); err != nil {
 		return nil, err
 	} else {
 		// 加载支付宝公钥
@@ -64,16 +64,15 @@ func (a *AliFaceToFace) Start(faceBody any) (any, error) {
 
 	// 面对面支付默认
 	param.ProductCode = "FACE_TO_FACE_PAYMENT"
-
 	param.OutTradeNo = body.OutTradeNo
 	param.Subject = body.Subject
 	param.NotifyURL = a.notifyUrl
 	param.TotalAmount = strconv.FormatFloat(body.TotalAmount, 'f', 2, 64)
 
 	if rsp, err := a.client.TradePreCreate(param); err != nil {
-		return nil, errors.New("面对面支付错误")
+		return nil, err
 	} else {
-		if !rsp.IsSuccess() {
+		if !rsp.IsSuccess() || rsp.Content.OutTradeNo != body.OutTradeNo {
 			log.Logger().Errorf("【Alipay 面对面支付】创建订单 %v 信息发生错误: %s-%s", body, rsp.Content.Msg, rsp.Content.SubMsg)
 			return nil, errors.New("创建面对面支付错误")
 		}
