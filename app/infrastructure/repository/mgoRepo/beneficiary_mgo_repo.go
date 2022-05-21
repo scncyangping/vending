@@ -81,3 +81,16 @@ func (b *BeneficiaryMgoRepository) ListBeneficiaryPageBy(skip, limit int64, sort
 	}
 	return bfs, nil
 }
+
+func (b *BeneficiaryMgoRepository) GetBeneficiaryByOwnerIdAndType(s string, beneficiaryType types.BeneficiaryType) (*do.BeneficiaryDo, error) {
+	var (
+		err error
+		bfa do.BeneficiaryDo
+	)
+	if err = b.mgo.FindOne(types.B{"ownerId": s, "status": beneficiaryType}, &bfa); err != nil {
+		log.Logger().Error("GetBeneficiaryById Error, %v", err)
+		return nil, err
+	}
+	return &bfa, nil
+
+}

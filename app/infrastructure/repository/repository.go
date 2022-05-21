@@ -12,7 +12,6 @@ type Repository struct {
 	CommodityRepo   *mgoRepo.CommodityMgoRepository
 	OrderRepo       *mgoRepo.OrderMgoRepository
 	OrderTempRepo   *mgoRepo.OrderMgoRepository
-	PayDesRepo      *mgoRepo.PayDesMgoRepository
 	StockRepo       *mgoRepo.StockMgoRepository
 	RoleRepo        *mgoRepo.RoleMgoRepository
 }
@@ -26,7 +25,6 @@ func NewRepository() *Repository {
 		CommodityRepo:   mgoRepo.NewCommodityMgoRepository(mongo.OpCn("commodity")),
 		OrderRepo:       mgoRepo.NewOrderMgoRepository(mongo.OpCn("order")),
 		OrderTempRepo:   mgoRepo.NewOrderMgoRepository(mongo.OpCn("order_temp")),
-		PayDesRepo:      mgoRepo.NewPayDesMgoRepository(mongo.OpCn("pay_des")),
 		StockRepo:       mgoRepo.NewStockMgoRepository(mongo.OpCn("stock")),
 		RoleRepo:        mgoRepo.NewRoleMgoRepository(mongo.OpCn("role")),
 	}
