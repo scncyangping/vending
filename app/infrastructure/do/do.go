@@ -41,39 +41,20 @@ type CommodityDo struct {
 	ImageUrl     string                `json:"imageUrl" bson:"imageUrl"`         // 图片链接
 	Status       types.CommodityStatus `json:"status" bson:"status"`             // 商品状态
 	CategoryId   string                `json:"categoryId" bson:"categoryId"`     // 类别Id
+	OwnerId      string                `json:"ownerId" bson:"ownerId"`           // 商品拥有人,可转移,转移后收款方式改为转移人
 }
 
-// OrderItemSubDo 订单明细
-type OrderItemSubDo struct {
-	CommodityName  string  `json:"commodityName" bson:"commodityName"`   // 商品类别+商品名称
-	OriginalAmount float64 `json:"originalAmount" bson:"originalAmount"` // 商品原金额
-	Amount         float64 `json:"amount" bson:"amount"`                 // 折扣计算后金额
-}
-
-// PayerSubDo 支付人信息
-type PayerSubDo struct {
-	// PayUser string          `json:"payUser" bson:"payUser"`  // 支付人 暂时删除
-	Phone       string `json:"phone" bson:"phone"`             // 电话号码
-	Email       string `json:"email" bson:"email"`             // 邮箱
-	PayerRemark string `json:"payerRemark" bson:"payerRemark"` // 支付备注
-}
-
-// PayDesDo 支付信息 作为订单的元素，不单独存储
-type PayDesDo struct {
-	PayerSubDo PayerSubDo      `json:"payerSubDo" bson:"payerSubDo"` // 支付额外信息
-	PayAmount  float64         `json:"payAmount" bson:"payAmount"`   // 支付金额
-	BfDo       BeneficiaryDo   `json:"bf" bson:"bf"`                 // 支付关联信息
-	PayStatus  types.PayStatus `json:"payStatus" bson:"payStatus"`   // 支付状态
-	//PayLog    []string        `json:"payLog" bson:"payLog"`       // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
+type BeneficiarySub struct {
+	Type    types.BeneficiaryType   `json:"type" bson:"type"`       // 支付类型
+	Status  types.BeneficiaryStatus `json:"status" bson:"status"`   // 状态：正常使用、停用、冻结
+	Data    any                     `json:"data" bson:"data"`       // 支付使用数据：各个支付方式需要信息
+	OwnerId string                  `json:"ownerId" bson:"ownerId"` // 收款人Id
 }
 
 // BeneficiaryDo 收款信息
 type BeneficiaryDo struct {
 	Do
-	Type   types.BeneficiaryType   `json:"type" bson:"type"`     // 支付类型
-	Status types.BeneficiaryStatus `json:"status" bson:"status"` // 状态：正常使用、停用、冻结
-	Data   any                     `json:"data" bson:"data"`     // 支付使用数据：各个支付方式需要信息
-	UserId string                  `json:"userId" bson:"userId"` // 收款人Id,必是注册用户
+	BeneficiarySub
 }
 
 // OrderDo 订单
@@ -81,9 +62,10 @@ type OrderDo struct {
 	Do
 	OriginalAmount float64           `json:"originalAmount" bson:"originalAmount"` // 总商品原金额
 	Amount         float64           `json:"amount" bson:"amount"`                 // 总商品折扣金额
-	Items          []OrderItemSubDo  `json:"items" bson:"items"`                   // 订单明细
-	Payment        PayDesDo          `json:"payment" bson:"payment"`               // 支付信息
+	Items          []OrderItemSub    `json:"items" bson:"items"`                   // 订单明细
+	Payment        PayDesSubDo       `json:"payment" bson:"payment"`               // 支付信息
 	OrderStatus    types.OrderStatus `json:"orderStatus" bson:"orderStatus"`       // 订单状态 开始、待支付、完成
+	BfDo           BeneficiarySub    `json:"bf" bson:"bf"`                         // 支付关联信息
 }
 
 // StockDo 库存
@@ -102,4 +84,23 @@ type CategoryDo struct {
 	PId      string         `json:"pId" bson:"pId"`           // 父类别Id
 	StockNum int            `json:"stockNum" bson:"stockNum"` // 库存数量 用库存数量去锁定待支付订单
 	SellType types.SellType `json:"sellType" bson:"sellType"` // 1 一次性 2 可重复使用
+}
+
+// OrderItemSub 订单明细
+type OrderItemSub struct {
+	CommodityId    string         `json:"commodityId" bson:"commodityId"`       // 商品Id
+	CommodityName  string         `json:"commodityName" bson:"commodityName"`   // 商品类别+商品名称
+	OriginalAmount float64        `json:"originalAmount" bson:"originalAmount"` // 商品原金额
+	Amount         float64        `json:"amount" bson:"amount"`                 // 折扣计算后金额
+	OwnerId        string         `json:"ownerId"`                              // 商品拥有人,可转移,转移后收款方式改为转移人
+	Payment        BeneficiarySub `json:"payment" bson:"amount"`                // 商品关联收款信息
+}
+
+// PayDesSubDo 支付信息 作为订单的元素，不单独存储
+type PayDesSubDo struct {
+	Phone       string          `json:"phone" bson:"phone"`             // 电话号码
+	Email       string          `json:"email" bson:"email"`             // 邮箱
+	PayerRemark string          `json:"payerRemark" bson:"payerRemark"` // 支付备注
+	PayStatus   types.PayStatus `json:"payStatus" bson:"payStatus"`     // 支付状态
+	PayLog      []string        `json:"payLog" bson:"payLog"`           // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
 }
