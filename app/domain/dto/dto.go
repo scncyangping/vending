@@ -28,20 +28,10 @@ type StockSaveReq struct {
 	CategoryId string `json:"categoryId"` // 关联类别Id
 }
 
-type CreateTemItem struct {
-	CommodityId string `json:"commodityId"` // 商品id
-	Num         int    `json:"num"`         // 购买数量
-}
-
-// CreateTemOrder 下单参数
-type CreateTemOrder struct {
-	Commodities []CreateTemItem `json:"commodities"`
-	PayBfId     string          `json:"pay_bf_id"`   // 支付方式id
-	PayerSubObj obj.PayerSubObj `json:"payerSubObj"` // 下单额外信息
-}
-
-// TemOrderPayDto 临时订单支付信息
-type TemOrderPayDto struct {
-	Type types.BeneficiaryType `json:"type"`
-	Data any                   `json:"data"` // 具体支付数据，比如支付宝当面付就为付款url地址
+type CreateOrderReq struct {
+	// 商品Id
+	CommodityId string                `json:"commodityId"` // 商品Id
+	Num         int                   `json:"num"`         // 购买数量
+	PayDes      obj.PayDesObj         `json:"PayDes"`      // 额外信息
+	PayType     types.BeneficiaryType `json:"payType"`
 }

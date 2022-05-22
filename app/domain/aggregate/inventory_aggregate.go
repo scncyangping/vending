@@ -5,7 +5,6 @@ import (
 	"vending/app/domain/dto"
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
-	"vending/app/domain/vo"
 	"vending/app/infrastructure/pkg/util"
 	"vending/app/types"
 	"vending/app/types/constants"
@@ -48,10 +47,15 @@ func (c *InventoryAggregate) Instance(categoryId ...string) (*InventoryAggregate
 	return c, nil
 }
 
+// OutOfStock 是否缺货
+func (c *InventoryAggregate) OutOfStock() bool {
+	return c.categoryEn.StockNum < 1
+}
+
 // OutStock 出库
-func (c *InventoryAggregate) OutStock(num int) ([]*vo.StockVo, error) {
+func (c *InventoryAggregate) OutStock(orderId string, num int) ([]*entity.StockEn, error) {
 	var (
-		stockVos []*vo.StockVo
+		stockEns []*entity.StockEn
 		stockIds []string
 	)
 	// 校验库存
@@ -70,27 +74,30 @@ func (c *InventoryAggregate) OutStock(num int) ([]*vo.StockVo, error) {
 		}
 		for _, v := range stocks {
 			stockIds = append(stockIds, v.Id)
-			vo := vo.StockVo{}
+			vo := entity.StockEn{}
 			util.StructCopy(vo, v)
-			stockVos = append(stockVos, &vo)
+			stockEns = append(stockEns, &vo)
 		}
 	}
 	// 更新取出数据状态为已使用
-	if count, err := c.stockRepo.UpdateStock(types.B{"_id": types.B{"$in": stockIds}}, types.B{"$set": types.B{"status": types.StockNormal}}); err != nil {
+	uq := types.B{"_id": types.B{"$in": stockIds}, "status": types.StockNormal}
+	us := types.B{"$set": types.B{"status": types.StockUsed, "orderId": orderId}}
+
+	if count, err := c.stockRepo.UpdateStock(uq, us); err != nil {
 		return nil, errors.New("扣减库存失败")
 	} else {
 		if int(count) != num {
 			// 说明在修改库存的时候被其他协程修改了
 			// 重新计算
-			return c.OutStock(num)
+			return c.OutStock(orderId, num)
 		}
 	}
 	// 修改分类统计库存总数量
 	err := c.stockNum()
 	if err != nil {
-		return stockVos, errors.New("出库失败")
+		return stockEns, errors.New("出库失败")
 	}
-	return stockVos, nil
+	return stockEns, nil
 }
 
 // InStockOne 入库

@@ -77,15 +77,16 @@ type BeneficiaryRepo interface {
 	UpdateBeneficiary(types.B, types.B) error
 	DeleteBeneficiary(string) error
 	GetBeneficiaryById(string) (*do.BeneficiaryDo, error)
+	GetBeneficiaryByOwnerIdAndType(string, types.BeneficiaryType) (*do.BeneficiaryDo, error)
 	ListBeneficiaryBy(types.B) ([]*do.BeneficiaryDo, error)
 	ListBeneficiaryPageBy(skip, limit int64, sort, filter any) ([]*do.BeneficiaryDo, error)
 }
 
-type PayDesRepo interface {
-	SavePayDes(entity *entity.PayDesEn) (string, error)
-	UpdatePayDes(types.B, types.B) error
-	DeletePayDes(string) error
-	GetPayDesById(string) (*do.PayDesDo, error)
-	ListPayDesBy(types.B) ([]*do.PayDesDo, error)
-	ListPayDesPageBy(skip, limit int64, sort, filter any) ([]*do.PayDesDo, error)
-}
+//type PayDesRepo interface {
+//	SavePayDes(entity *entity.PayDes) (string, error)
+//	UpdatePayDes(types.B, types.B) error
+//	DeletePayDes(string) error
+//	GetPayDesById(string) (*do.PayDesDo, error)
+//	ListPayDesBy(types.B) ([]*do.PayDesDo, error)
+//	ListPayDesPageBy(skip, limit int64, sort, filter any) ([]*do.PayDesDo, error)
+//}

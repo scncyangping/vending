@@ -31,34 +31,13 @@ type CommodityEn struct {
 	ImageUrl     string                `json:"imageUrl"`     // 图片链接
 	Status       types.CommodityStatus `json:"status"`       // 商品状态
 	CategoryId   string                `json:"categoryId"`   //  商品分类Id
+	OwnerId      string                `json:"ownerId"`      // 商品拥有人,可转移,转移后收款方式改为转移人
 }
 
 // BeneficiaryEn 收款信息
 type BeneficiaryEn struct {
-	Id     string                  `json:"id"`
-	Type   types.BeneficiaryType   `json:"type"`   // 支付类型
-	Status types.BeneficiaryStatus `json:"status"` // 状态：正常使用、停用、冻结
-	Data   any                     `json:"data"`   // 支付使用数据：各个支付方式需要信息
-	UserId string                  `json:"userId"` // 收款人Id,必是注册用户
-}
-
-// PayDesEn 支付信息
-type PayDesEn struct {
-	Id          string          `json:"id"`
-	PayUser     string          `json:"payUser"`     // 支付人
-	PayAmount   float64         `json:"payAmount"`   // 支付金额
-	PayStatus   types.PayStatus `json:"payStatus"`   // 支付状态
-	PayLog      []string        `json:"payLog"`      // 流转日志 ["已创建：支付url xxx","已支付，回调：xxx"]
-	PayerSubObj obj.PayerSubObj `json:"payerSubObj"` // 支付额外信息
-}
-
-// OrderEn 订单
-type OrderEn struct {
-	Id             string             `json:"id"`
-	OriginalAmount float64            `json:"originalAmount"` // 总商品原金额
-	Amount         float64            `json:"amount"`
-	OrderStatus    types.OrderStatus  `json:"orderStatus"` // 订单状态 开始、待支付、完成
-	Items          []obj.OrderItemObj `json:"items"`
+	Id string `json:"id"`
+	obj.BeneficiaryObj
 }
 
 // StockEn 库存
@@ -66,6 +45,7 @@ type StockEn struct {
 	Id         string            `json:"id"`
 	Data       any               `json:"data"`       // 库存内容
 	CategoryId string            `json:"categoryId"` // 关联类别Id
+	OrderId    string            `json:"orderId"`    // 关联订单Id
 	Status     types.StockStatus `json:"status"`
 }
 
@@ -76,4 +56,15 @@ type CategoryEn struct {
 	PId      string         `json:"pId" `      // 父类别Id
 	StockNum int            `json:"stockNum" ` // 库存数量 用库存数量去锁定待支付订单
 	SellType types.SellType `json:"sellType" ` // 0 一次性 1 可重复使用
+}
+
+// OrderEn 订单
+type OrderEn struct {
+	Id             string             `json:"id"`
+	OriginalAmount float64            `json:"originalAmount" bson:"originalAmount"` // 总商品原金额
+	Amount         float64            `json:"amount" bson:"amount"`                 // 总商品折扣金额
+	Items          []obj.OrderItemObj `json:"items" bson:"items"`                   // 订单明细
+	PayDesObj      obj.PayDesObj      `json:"payment" bson:"payment"`
+	OrderStatus    types.OrderStatus  `json:"orderStatus" bson:"orderStatus"` // 订单状态 开始、待支付、完成
+	BfObj          obj.BeneficiaryObj `json:"bf" bson:"bf"`
 }
