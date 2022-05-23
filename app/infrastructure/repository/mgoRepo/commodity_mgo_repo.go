@@ -42,6 +42,13 @@ func (c *CommodityMgoRepository) DeleteCommodity(s string) error {
 	return nil
 }
 
+func (c *CommodityMgoRepository) DeleteCommodityBatch(s []string) error {
+	if _, err := c.mgo.UpdateOne(types.B{"_id": types.B{"$in": s}}, types.B{"isDeleted": 1}); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (c *CommodityMgoRepository) GetCommodityById(s string) (*do.CommodityDo, error) {
 	var (
 		err error

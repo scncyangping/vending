@@ -2,7 +2,7 @@ package aggregate
 
 import (
 	"errors"
-	"vending/app/application/dto"
+	"vending/app/application/cqe/cmd"
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/pkg/util"
@@ -102,7 +102,7 @@ func (c *InventoryAggregate) OutStock(orderId string, num int) ([]*entity.StockE
 }
 
 // InStockOne 入库
-func (c *InventoryAggregate) InStockOne(dto *dto.StockSaveReq) (string, error) {
+func (c *InventoryAggregate) InStockOne(dto *cmd.StockSaveCmd) (string, error) {
 	var (
 		en entity.StockEn
 	)
@@ -137,7 +137,7 @@ func (c *InventoryAggregate) RemoveCategoryByIds(ids []string) error {
 }
 
 // UpdateCategory 修改分类基本信息
-func (c *InventoryAggregate) UpdateCategory(req *dto.CategorySaveReq) error {
+func (c *InventoryAggregate) UpdateCategory(req *cmd.CategoryUpdateCmd) error {
 	// 查询对应分类是否存在
 	if c.existCategoryByName(req.Name) {
 		return errors.New("该分类已存在")
@@ -159,7 +159,7 @@ func (c *InventoryAggregate) UpdateCategory(req *dto.CategorySaveReq) error {
 }
 
 // SaveCategory 添加分类
-func (c *InventoryAggregate) SaveCategory(req *dto.CategorySaveReq) (string, error) {
+func (c *InventoryAggregate) SaveCategory(req *cmd.CategorySaveCmd) (string, error) {
 	var (
 		err        error
 		categoryEn entity.CategoryEn

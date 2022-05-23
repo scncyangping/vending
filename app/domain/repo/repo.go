@@ -29,6 +29,7 @@ type CommodityRepo interface {
 	SaveCommodity(entity *entity.CommodityEn, CategoryId string) (string, error)
 	UpdateCommodity(queryFilter types.B, updateParm types.B) error
 	DeleteCommodity(string) error
+	DeleteCommodityBatch(s []string) error
 	GetCommodityById(string) (*do.CommodityDo, error)
 	ListCommodityBy(types.B) ([]*do.CommodityDo, error)
 	ListCommodityPageBy(skip, limit int64, sort, filter any) ([]*do.CommodityDo, error)

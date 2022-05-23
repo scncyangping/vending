@@ -2,6 +2,7 @@ package aggregate
 
 import (
 	"errors"
+	"vending/app/application/cqe/cmd"
 	"vending/app/domain/aggregate/factory"
 	"vending/app/domain/entity"
 	"vending/app/domain/obj"
@@ -59,15 +60,14 @@ func (o *OrderAggregate) Instance(orderId ...string) (*OrderAggregate, error) {
 
 // CreateTempOrderOne 下单
 // 创建订单仅需支付信息金额
-func (o *OrderAggregate) CreateTempOrderOne(commodityId string, num int,
-	payType types.BeneficiaryType, payDes obj.PayDesObj) (string, error) {
+func (o *OrderAggregate) CreateTempOrderOne(data *cmd.CreateOrderCmd) (string, error) {
 	var (
 		orderEn entity.OrderEn
 		orderId = snowflake.NextId()
 		items   = make([]obj.OrderItemObj, 0)
 	)
 	// 组装商品明细
-	if i, err := o.buildOrderItem(payType, commodityId, num); err != nil {
+	if i, err := o.buildOrderItem(data.PayType, data.CommodityId, data.Num); err != nil {
 		return constants.EmptyStr, err
 	} else {
 		items = append(items, i)
@@ -80,7 +80,7 @@ func (o *OrderAggregate) CreateTempOrderOne(commodityId string, num int,
 	}
 	orderEn.Id = orderId                        // 预定义订单id
 	orderEn.Items = items                       // 商品即商品支付明细
-	orderEn.PayDesObj = payDes                  // 订单描述
+	orderEn.PayDesObj = data.PayDes             // 订单描述
 	orderEn.OrderStatus = types.OrderPayPending // 订单状态创建为待支付
 
 	// 临时订单
@@ -144,13 +144,13 @@ func (o *OrderAggregate) buildOrderItem(payType types.BeneficiaryType, commodity
 	if cg, err := factory.Instance.CommodityAggregateInstance(commodityId); err != nil {
 		return item, err
 	} else {
-		item.CommodityId = cg.commodityEn.Id
-		item.Amount = cg.commodityEn.Amount * float64(num)
-		item.CommodityName = cg.commodityEn.Name
-		item.OriginalAmount = cg.commodityEn.Amount * float64(num) // 原金额 TOTO 可加优惠策略
-		item.OwnerId = cg.commodityEn.OwnerId
+		item.CommodityId = cg.CommodityEn.Id
+		item.Amount = cg.CommodityEn.Amount * float64(num)
+		item.CommodityName = cg.CommodityEn.Name
+		item.OriginalAmount = cg.CommodityEn.Amount * float64(num) // 原金额 TOTO 可加优惠策略
+		item.OwnerId = cg.CommodityEn.OwnerId
 		// 配置收款信息
-		if bf, err := o.beneficiaryRepo.GetBeneficiaryByOwnerIdAndType(cg.commodityEn.OwnerId, payType); err != nil {
+		if bf, err := o.beneficiaryRepo.GetBeneficiaryByOwnerIdAndType(cg.CommodityEn.OwnerId, payType); err != nil {
 			return item, err
 		} else {
 			pObj := obj.BeneficiaryObj{}

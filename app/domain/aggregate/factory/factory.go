@@ -5,38 +5,38 @@ import (
 	"vending/app/infrastructure/repository"
 )
 
-var Instance *Aggregate
+var Instance *factoryAggregate
 
-type Aggregate struct {
-	commodityAggregate *aggregate.CommodityAggregate
-	inventoryAggregate *aggregate.InventoryAggregate
-	orderAggregate     *aggregate.OrderAggregate
-	payAggregate       *aggregate.PayAggregate
+type factoryAggregate struct {
+	CommodityAggregate *aggregate.CommodityAggregate
+	InventoryAggregate *aggregate.InventoryAggregate
+	OrderAggregate     *aggregate.OrderAggregate
+	PayAggregate       *aggregate.PayAggregate
 }
 
 // NewAggregate wire
 func NewAggregate(repo *repository.Repository) {
-	f := &Aggregate{
-		commodityAggregate: aggregate.NewCommodityAggregate(repo.CommodityRepo, repo.CategoryRepo),
-		inventoryAggregate: aggregate.NewInventoryAggregate(repo.CategoryRepo, repo.StockRepo),
-		orderAggregate:     aggregate.NewOrderAggregate(repo.OrderRepo, repo.OrderTempRepo, repo.BeneficiaryRepo),
-		payAggregate:       aggregate.NewPayAggregate(repo.BeneficiaryRepo),
+	f := &factoryAggregate{
+		CommodityAggregate: aggregate.NewCommodityAggregate(repo.CommodityRepo, repo.CategoryRepo),
+		InventoryAggregate: aggregate.NewInventoryAggregate(repo.CategoryRepo, repo.StockRepo),
+		OrderAggregate:     aggregate.NewOrderAggregate(repo.OrderRepo, repo.OrderTempRepo, repo.BeneficiaryRepo),
+		PayAggregate:       aggregate.NewPayAggregate(repo.BeneficiaryRepo),
 	}
 	Instance = f
 }
 
-func (f *Aggregate) InventoryAggregateInstance(categoryId ...string) (*aggregate.InventoryAggregate, error) {
-	return f.inventoryAggregate.Instance(categoryId...)
+func (f *factoryAggregate) InventoryAggregateInstance(categoryId ...string) (*aggregate.InventoryAggregate, error) {
+	return f.InventoryAggregate.Instance(categoryId...)
 }
 
-func (f *Aggregate) CommodityAggregateInstance(categoryId ...string) (*aggregate.CommodityAggregate, error) {
-	return f.commodityAggregate.Instance(categoryId...)
+func (f *factoryAggregate) CommodityAggregateInstance(categoryId ...string) (*aggregate.CommodityAggregate, error) {
+	return f.CommodityAggregate.Instance(categoryId...)
 }
 
-func (f *Aggregate) OrderAggregateInstance(categoryId ...string) (*aggregate.OrderAggregate, error) {
-	return f.orderAggregate.Instance(categoryId...)
+func (f *factoryAggregate) OrderAggregateInstance(categoryId ...string) (*aggregate.OrderAggregate, error) {
+	return f.OrderAggregate.Instance(categoryId...)
 }
 
-func (f *Aggregate) PayAggregateInstance() (*aggregate.PayAggregate, error) {
-	return f.payAggregate, nil
+func (f *factoryAggregate) PayAggregateInstance() (*aggregate.PayAggregate, error) {
+	return f.PayAggregate, nil
 }

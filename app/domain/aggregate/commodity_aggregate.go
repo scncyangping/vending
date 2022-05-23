@@ -2,7 +2,7 @@ package aggregate
 
 import (
 	"errors"
-	"vending/app/application/dto"
+	"vending/app/application/cqe/cmd"
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/do"
@@ -23,8 +23,8 @@ type CommodityAggregateRepo struct {
 
 type CommodityAggregate struct {
 	CommodityAggregateRepo
-	commodityEn *entity.CommodityEn
-	commodityId string
+	CommodityEn *entity.CommodityEn
+	CommodityId string
 }
 
 func NewCommodityAggregate(commodityRepo repo.CommodityRepo, categoryRepo repo.CategoryRepo) *CommodityAggregate {
@@ -36,45 +36,48 @@ func NewCommodityAggregate(commodityRepo repo.CommodityRepo, categoryRepo repo.C
 	}
 }
 
-func (c *CommodityAggregate) Instance(commodityId ...string) (*CommodityAggregate, error) {
-	if len(commodityId) < 1 {
+func (c *CommodityAggregate) Instance(CommodityId ...string) (*CommodityAggregate, error) {
+	if len(CommodityId) < 1 {
 		return c, nil
 	}
-	c.commodityId = commodityId[0]
+	c.CommodityId = CommodityId[0]
 
-	if ca, err := c.commodityRepo.GetCommodityById(c.commodityId); err != nil {
+	if ca, err := c.commodityRepo.GetCommodityById(c.CommodityId); err != nil {
 		return c, err
 	} else {
-		util.StructCopy(&c.commodityEn, ca)
+		util.StructCopy(&c.CommodityEn, ca)
 	}
 	return c, nil
 }
 
 // CommodityUp 商品上架
 func (c *CommodityAggregate) CommodityUp() error {
-	log.Logger().Infof("上架商品 [ %s ]", c.commodityId)
+	log.Logger().Infof("上架商品 [ %s ]", c.CommodityId)
 	// 组装修改信息
-	return c.commodityRepo.UpdateCommodity(types.B{"_id": c.commodityId}, types.B{"status": types.CommodityUp})
+	return c.commodityRepo.UpdateCommodity(types.B{"_id": c.CommodityId}, types.B{"status": types.CommodityUp})
 }
 
 // CommodityDown 商品下架
-func (c *CommodityAggregate) CommodityDown(status types.CommodityStatus) error {
-	log.Logger().Infof("下架商品[ %s ] ", c.commodityId)
+func (c *CommodityAggregate) CommodityDown() error {
+	log.Logger().Infof("下架商品[ %s ] ", c.CommodityId)
 	// TODO 商品下架 发送其他事件
-	return c.commodityRepo.UpdateCommodity(types.B{"_id": c.commodityId}, types.B{"status": types.CommodityDown})
+	return c.commodityRepo.UpdateCommodity(types.B{"_id": c.CommodityId}, types.B{"status": types.CommodityDown})
 }
 
 // ModifyCommodity 修改商品基本信息
-func (c *CommodityAggregate) ModifyCommodity(req *dto.CommoditySaveReq) error {
+func (c *CommodityAggregate) ModifyCommodity(req *cmd.CommodityUpdateCmd) error {
 	if m, err := util.StructToMap(req); err != nil {
 		return errors.New("商品基本信息转换失败")
 	} else {
-		return c.commodityRepo.UpdateCommodity(types.B{"_id": c.commodityId}, types.B{"$set": m})
+		// 移除不需要的元素
+		delete(m, "CommodityId")
+
+		return c.commodityRepo.UpdateCommodity(types.B{"_id": c.CommodityId}, types.B{"$set": m})
 	}
 }
 
 // SaveCommodity 添加商品(包括商品基本信息及对应分类Id)
-func (c *CommodityAggregate) SaveCommodity(req *dto.CommoditySaveReq) (string, error) {
+func (c *CommodityAggregate) SaveCommodity(req *cmd.CommoditySaveCmd) (string, error) {
 	var (
 		err        error
 		en         entity.CommodityEn
@@ -91,11 +94,21 @@ func (c *CommodityAggregate) SaveCommodity(req *dto.CommoditySaveReq) (string, e
 	// 2. 组装基本信息
 	util.StructCopy(&en, categoryDo)
 	// 3. 添加唯一Id
-	en.Id = c.commodityId
+	en.Id = c.CommodityId
 	// 4. 保存
 	if _, err = c.commodityRepo.SaveCommodity(&en, req.CategoryId); err != nil {
 		return constants.EmptyStr, err
 	}
-	c.commodityEn = &en
-	return c.commodityId, nil
+	c.CommodityEn = &en
+	return c.CommodityId, nil
+}
+
+// DeleteCommodity 删除商品
+func (c *CommodityAggregate) DeleteCommodity(CommodityId string) error {
+	return c.commodityRepo.DeleteCommodity(CommodityId)
+}
+
+// DeleteCommodityBatch 批量删除商品
+func (c *CommodityAggregate) DeleteCommodityBatch(s []string) error {
+	return c.commodityRepo.DeleteCommodityBatch(s)
 }

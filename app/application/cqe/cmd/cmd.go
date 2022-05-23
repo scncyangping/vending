@@ -30,7 +30,7 @@ type CommoditySaveCmd struct {
 
 type CommodityUpdateCmd struct {
 	CommoditySaveCmd
-	commodityId string `json:"commodityId"` // 商品Id
+	CommodityId string `json:"commodityId"` // 商品Id
 }
 
 type CategorySaveCmd struct {

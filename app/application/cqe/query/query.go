@@ -1,9 +1,10 @@
 package query
 
 type PageQuery struct {
-	Page int
-	Size int
-	Sort string
+	Page   int    `json:"page"`   // 页
+	Size   int    `json:"size"`   // 每页数量
+	Sort   string `json:"sort"`   // 排序字段
+	SortBy string `json:"sortBy"` // 正序/倒序
 }
 
 type OrderPageQuery struct {

@@ -18,13 +18,13 @@ type AuthSrvImp struct {
 }
 
 // NewAuthSrvImp wire
-func NewAuthSrvImp(authService *service.Service) *AuthSrvImp {
+func NewAuthSrvImp(authService service.AuthService) *AuthSrvImp {
 	return &AuthSrvImp{
-		authSrv: authService.UserSrv,
+		authSrv: authService,
 	}
 }
 
-func (a *AuthSrvImp) Login(re cmd.LoginCmd) (dto.UserDto, error) {
+func (a *AuthSrvImp) Login(re *cmd.LoginCmd) (dto.UserDto, error) {
 	var (
 		userDto dto.UserDto
 	)
@@ -36,7 +36,7 @@ func (a *AuthSrvImp) Login(re cmd.LoginCmd) (dto.UserDto, error) {
 	}
 }
 
-func (a *AuthSrvImp) Register(re cmd.RegisterCmd) (string, error) {
+func (a *AuthSrvImp) Register(re *cmd.RegisterCmd) (string, error) {
 	var ue entity.UserEn
 
 	util.StructCopy(ue, re)
