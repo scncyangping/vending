@@ -2,10 +2,11 @@ package aggregate
 
 import (
 	"errors"
-	"vending/app/domain/dto"
+	"vending/app/application/dto"
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/pkg/util"
+	"vending/app/infrastructure/pkg/util/snowflake"
 	"vending/app/types"
 	"vending/app/types/constants"
 )
@@ -155,6 +156,28 @@ func (c *InventoryAggregate) UpdateCategory(req *dto.CategorySaveReq) error {
 	}
 
 	return c.categoryRepo.UpdateCategory(types.B{"_id": req.CategoryId}, types.B{"$set": m})
+}
+
+// SaveCategory 添加分类
+func (c *InventoryAggregate) SaveCategory(req *dto.CategorySaveReq) (string, error) {
+	var (
+		err        error
+		categoryEn entity.CategoryEn
+	)
+	// 查询对应分类是否存在
+	if c.existCategoryByName(req.Name) {
+		return constants.EmptyStr, errors.New("该分类已存在")
+	}
+
+	categoryEn.Name = req.Name
+	categoryEn.PId = req.PId
+	categoryEn.SellType = req.SellType
+	categoryEn.Id = snowflake.NextId()
+
+	if _, err = c.categoryRepo.SaveCategory(&categoryEn); err != nil {
+		return constants.EmptyStr, err
+	}
+	return categoryEn.Id, nil
 }
 
 // stockNum 分类统计库存数量修改

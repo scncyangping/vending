@@ -1,10 +1,10 @@
 package impl
 
 import (
-	"vending/app/domain/dto"
+	"vending/app/application/cqe/cmd"
+	"vending/app/application/dto"
 	"vending/app/domain/entity"
 	"vending/app/domain/service"
-	"vending/app/domain/vo"
 	"vending/app/infrastructure/pkg/util"
 	"vending/app/infrastructure/pkg/util/snowflake"
 	"vending/app/types/constants"
@@ -24,11 +24,19 @@ func NewAuthSrvImp(authService *service.Service) *AuthSrvImp {
 	}
 }
 
-func (a *AuthSrvImp) Login(re *dto.LoginRe) (*vo.UserVo, error) {
-	return a.authSrv.LoginByName(re.Name, re.Pwd)
+func (a *AuthSrvImp) Login(re cmd.LoginCmd) (dto.UserDto, error) {
+	var (
+		userDto dto.UserDto
+	)
+	if vo, err := a.authSrv.LoginByName(re.Name, re.Pwd); err != nil {
+		return userDto, err
+	} else {
+		util.StructCopy(&userDto, vo)
+		return userDto, nil
+	}
 }
 
-func (a *AuthSrvImp) Register(re *dto.RegisterRe) (string, error) {
+func (a *AuthSrvImp) Register(re cmd.RegisterCmd) (string, error) {
 	var ue entity.UserEn
 
 	util.StructCopy(ue, re)

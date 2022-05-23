@@ -6,6 +6,7 @@ import (
 	"vending/app/domain/entity"
 	"vending/app/domain/obj"
 	"vending/app/domain/repo"
+	"vending/app/infrastructure/do"
 	"vending/app/infrastructure/pkg/log"
 	"vending/app/infrastructure/pkg/util"
 	"vending/app/infrastructure/pkg/util/snowflake"
@@ -56,10 +57,9 @@ func (o *OrderAggregate) Instance(orderId ...string) (*OrderAggregate, error) {
 	return o, nil
 }
 
-// CreateOrderOne 下单
+// CreateTempOrderOne 下单
 // 创建订单仅需支付信息金额
-// TODO 暂时只支持单笔支付
-func (o *OrderAggregate) CreateOrderOne(commodityId string, num int,
+func (o *OrderAggregate) CreateTempOrderOne(commodityId string, num int,
 	payType types.BeneficiaryType, payDes obj.PayDesObj) (string, error) {
 	var (
 		orderEn entity.OrderEn
@@ -83,6 +83,7 @@ func (o *OrderAggregate) CreateOrderOne(commodityId string, num int,
 	orderEn.PayDesObj = payDes                  // 订单描述
 	orderEn.OrderStatus = types.OrderPayPending // 订单状态创建为待支付
 
+	// 临时订单
 	if _, err := o.orderTempRepo.SaveOrder(&orderEn); err != nil {
 		return constants.EmptyStr, err
 	}
@@ -93,6 +94,45 @@ func (o *OrderAggregate) CreateOrderOne(commodityId string, num int,
 	} else {
 		return payUrl, nil
 	}
+}
+
+// SaveOrder 创建订单
+// 在支付完成后回调
+func (o *OrderAggregate) SaveOrder(orderId string) error {
+	var (
+		err        error
+		temOrderDo *do.OrderDo
+		orderEn    entity.OrderEn
+	)
+	if temOrderDo, err = o.orderTempRepo.GetOrderById(orderId); err != nil {
+		return err
+	} else {
+		// 将当前数据拷贝到订单标中
+		util.StructCopy(&orderEn, temOrderDo)
+		if _, err = o.orderRepo.SaveOrder(&orderEn); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+// Cancel 取消订单
+func (o *OrderAggregate) Cancel(orderId string) error {
+	if temOrderDo, err := o.orderTempRepo.GetOrderById(orderId); err != nil {
+		return err
+	} else {
+		if temOrderDo.OrderStatus == types.OrderPayPending {
+			// 更新订单状态为取消
+			filter := types.B{"_id": orderId}
+			update := types.B{"orderStatus": types.OrderCancel}
+			if err := o.orderTempRepo.UpdateOrder(filter, update); err != nil {
+				return err
+			}
+		} else if temOrderDo.OrderStatus == types.OrderFinish {
+			return errors.New("订单已完成,无法取消")
+		}
+	}
+	return nil
 }
 
 func (o *OrderAggregate) buildOrderItem(payType types.BeneficiaryType, commodityId string, num int) (obj.OrderItemObj, error) {

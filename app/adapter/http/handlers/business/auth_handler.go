@@ -3,8 +3,8 @@ package business
 import (
 	"github.com/gin-gonic/gin"
 	"vending/app/adapter/http/handlers"
+	"vending/app/application/dto"
 	"vending/app/application/service/impl"
-	"vending/app/domain/dto"
 )
 
 type AuthHandler struct {

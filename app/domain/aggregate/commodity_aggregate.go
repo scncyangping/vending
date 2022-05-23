@@ -2,7 +2,7 @@ package aggregate
 
 import (
 	"errors"
-	"vending/app/domain/dto"
+	"vending/app/application/dto"
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/do"
