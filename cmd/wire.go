@@ -6,10 +6,9 @@ package main
 
 import (
 	"github.com/google/wire"
-	"vending/app/adapter/http/handlers/business"
 	"vending/app/adapter/http/server"
-	"vending/app/application/service/impl"
-	"vending/app/domain/aggregate"
+	service2 "vending/app/application/service"
+	"vending/app/domain/aggregate/factory"
 	"vending/app/domain/service"
 	"vending/app/infrastructure/config"
 	"vending/app/infrastructure/repository"
@@ -18,10 +17,9 @@ import (
 var providerSet = wire.NewSet(
 	config.NewConfig,
 	repository.NewRepository,
-	aggregate.NewAggregate,
+	factory.NewAggregate,
 	service.NewService,
-	impl.NewAuthSrvImp,
-	business.NewAuthHandler,
+	service2.NewAppSrvManager,
 	server.NewHandlers,
 )
 

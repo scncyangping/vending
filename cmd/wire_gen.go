@@ -8,9 +8,9 @@ package main
 
 import (
 	"github.com/google/wire"
-	"vending/app/adapter/http/handlers/business"
 	"vending/app/adapter/http/server"
-	"vending/app/application/service/impl"
+	service2 "vending/app/application/service"
+	"vending/app/domain/aggregate/factory"
 	"vending/app/domain/service"
 	"vending/app/infrastructure/config"
 	"vending/app/infrastructure/repository"
@@ -21,12 +21,11 @@ import (
 func NewHandler() *server.Handlers {
 	repositoryRepository := repository.NewRepository()
 	serviceService := service.NewService(repositoryRepository)
-	authSrvImp := impl.NewAuthSrvImp(serviceService)
-	authHandler := business.NewAuthHandler(authSrvImp)
-	handlers := server.NewHandlers(authHandler)
+	appSrvManager := service2.NewAppSrvManager(serviceService)
+	handlers := server.NewHandlers(appSrvManager)
 	return handlers
 }
 
 // wire.go:
 
-var providerSet = wire.NewSet(config.NewConfig, repository.NewRepository, service.NewService, impl.NewAuthSrvImp, business.NewAuthHandler, server.NewHandlers)
+var providerSet = wire.NewSet(config.NewConfig, repository.NewRepository, factory.NewAggregate, service.NewService, service2.NewAppSrvManager, server.NewHandlers)
