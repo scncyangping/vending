@@ -10,17 +10,19 @@ import (
 	"syscall"
 	"time"
 	"vending/app/adapter/http/handlers/business"
+	"vending/app/application/service"
 	"vending/app/infrastructure/config"
 	"vending/app/infrastructure/pkg/log"
 )
 
 type Handlers struct {
-	*business.AuthHandler
+	AuthHandler *business.AuthHandler
 }
 
-func NewHandlers(b *business.AuthHandler) *Handlers {
+// NewHandlers wire
+func NewHandlers(srvM *service.AppSrvManager) *Handlers {
 	return &Handlers{
-		AuthHandler: b,
+		AuthHandler: business.NewAuthHandler(srvM.AuthSrv),
 	}
 }
 
