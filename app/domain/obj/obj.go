@@ -4,12 +4,15 @@ import "vending/app/types"
 
 // OrderItemObj 订单明细
 type OrderItemObj struct {
-	CommodityId    string         `json:"commodityId"`           // 商品Id 不可变数据
-	CommodityName  string         `json:"commodityName"`         // 商品类别+商品名称
-	OriginalAmount float64        `json:"originalAmount"`        // 商品原金额
-	Amount         float64        `json:"amount"`                // 折扣计算后金额
-	OwnerId        string         `json:"ownerId"`               // 商品拥有人,可转移,转移后收款方式改为转移人
-	Payment        BeneficiaryObj `json:"payment" bson:"amount"` // 商品关联收款信息
+	CommodityId    string  `json:"commodityId"`    // 商品Id 不可变数据
+	CommodityName  string  `json:"commodityName"`  // 商品类别+商品名称
+	OriginalAmount float64 `json:"originalAmount"` // 商品原金额
+	Amount         float64 `json:"amount"`         // 折扣计算后金额
+	OwnerId        string  `json:"ownerId"`        // 商品拥有人,可转移,转移后收款方式改为转移人
+	// 关联收款信息暂时不需要
+	// 订单完成过后，根据ownerId去查询商户收款方式
+	//Payment        BeneficiaryObj `json:"payment" bson:"amount"` // 商品关联收款信息
+	Num uint8 `json:"num"` // 商品数量
 }
 
 type BeneficiaryObj struct {
