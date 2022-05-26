@@ -17,7 +17,6 @@ type AuthSrvImp struct {
 	authSrv service.AuthService
 }
 
-// NewAuthSrvImp wire
 func NewAuthSrvImp(authService service.AuthService) *AuthSrvImp {
 	return &AuthSrvImp{
 		authSrv: authService,

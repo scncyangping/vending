@@ -8,6 +8,7 @@ import (
 	"vending/app/domain/service"
 )
 
+//AuthSrv 接口
 type AuthSrv interface {
 	Login(*cmd.LoginCmd) (dto.UserDto, error)
 	Register(*cmd.RegisterCmd) (string, error)
@@ -62,16 +63,16 @@ type OrderSrv interface {
 	Query(query.OrderPageQuery) ([]*dto.OrderListDto, error)
 }
 
-type SrvManager struct {
+type AppSrvManager struct {
 	AuthSrv      AuthSrv
 	CommoditySrv CommoditySrv
 	InventorySrv InventorySrv
 	OrderSrv     OrderSrv
 }
 
-// NewAuthSrvManager wire
-func NewAuthSrvManager(srv service.Service) *SrvManager {
-	return &SrvManager{
+// NewAppSrvManager wire
+func NewAppSrvManager(srv *service.Service) *AppSrvManager {
+	return &AppSrvManager{
 		AuthSrv:      impl.NewAuthSrvImp(srv.UserSrv),
 		CommoditySrv: impl.NewCommoditySrvImp(),
 		InventorySrv: impl.NewInventorySrvImp(),
