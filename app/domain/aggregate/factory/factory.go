@@ -15,7 +15,7 @@ type factoryAggregate struct {
 }
 
 // NewAggregate wire
-func NewAggregate(repo *repository.Repository) {
+func NewAggregate(repo *repository.Repository) *factoryAggregate {
 	f := &factoryAggregate{
 		CommodityAggregate: aggregate.NewCommodityAggregate(repo.CommodityRepo, repo.CategoryRepo),
 		InventoryAggregate: aggregate.NewInventoryAggregate(repo.CategoryRepo, repo.StockRepo),
@@ -23,6 +23,7 @@ func NewAggregate(repo *repository.Repository) {
 		PayAggregate:       aggregate.NewPayAggregate(repo.BeneficiaryRepo),
 	}
 	Instance = f
+	return f
 }
 
 func (f *factoryAggregate) InventoryAggregateInstance(categoryId ...string) (*aggregate.InventoryAggregate, error) {

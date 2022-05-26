@@ -112,3 +112,7 @@ func (c *CommodityAggregate) DeleteCommodity(CommodityId string) error {
 func (c *CommodityAggregate) DeleteCommodityBatch(s []string) error {
 	return c.commodityRepo.DeleteCommodityBatch(s)
 }
+
+func (c *CommodityAggregate) BuildCommodityObj(ids []string) ([]*entity.CommodityEn, error) {
+	return nil, nil
+}

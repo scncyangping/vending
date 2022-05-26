@@ -2,17 +2,13 @@ package aggregate
 
 import (
 	"errors"
-	"vending/app/application/cqe/cmd"
-	"vending/app/domain/aggregate/factory"
 	"vending/app/domain/entity"
 	"vending/app/domain/obj"
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/do"
-	"vending/app/infrastructure/pkg/log"
 	"vending/app/infrastructure/pkg/util"
 	"vending/app/infrastructure/pkg/util/snowflake"
 	"vending/app/types"
-	"vending/app/types/constants"
 )
 
 // 创建订单
@@ -26,11 +22,8 @@ type orderAggregateRepo struct {
 
 type OrderAggregate struct {
 	orderAggregateRepo
-	OrderId       string
-	OrderEn       entity.OrderEn       // 订单基础数据
-	Items         []obj.OrderItemObj   // 订单明细
-	PayDesObj     obj.PayDesObj        // 支付明细
-	BeneficiaryEn entity.BeneficiaryEn // 收款信息镜像
+	OrderId string
+	OrderEn entity.OrderEn // 订单基础数据
 }
 
 func NewOrderAggregate(orderRepo repo.OrderRepo, orderTempRepo repo.OrderTempRepo,
@@ -60,40 +53,35 @@ func (o *OrderAggregate) Instance(orderId ...string) (*OrderAggregate, error) {
 
 // CreateTempOrderOne 下单
 // 创建订单仅需支付信息金额
-func (o *OrderAggregate) CreateTempOrderOne(data *cmd.CreateOrderCmd) (string, error) {
+func (o *OrderAggregate) CreateTempOrderOne(items []obj.OrderItemObj, desObj obj.PayDesObj) (string, float64, error) {
 	var (
 		orderEn entity.OrderEn
 		orderId = snowflake.NextId()
-		items   = make([]obj.OrderItemObj, 0)
 	)
-	// 组装商品明细
-	if i, err := o.buildOrderItem(data.PayType, data.CommodityId, data.Num); err != nil {
-		return constants.EmptyStr, err
-	} else {
-		items = append(items, i)
-
-		originalAmount, amount := o.orderBuild(&items)
-		orderEn.OriginalAmount = originalAmount
-		orderEn.Amount = amount
-		// TODO 默认取第一个支付方式
-		orderEn.BfObj = items[0].Payment
-	}
 	orderEn.Id = orderId                        // 预定义订单id
 	orderEn.Items = items                       // 商品即商品支付明细
-	orderEn.PayDesObj = data.PayDes             // 订单描述
+	orderEn.PayDesObj = desObj                  // 订单描述
 	orderEn.OrderStatus = types.OrderPayPending // 订单状态创建为待支付
 
-	// 临时订单
-	if _, err := o.orderTempRepo.SaveOrder(&orderEn); err != nil {
-		return constants.EmptyStr, err
+	// TODO 平台收款方式 暂时指定Id为admin
+	bf, _ := o.beneficiaryRepo.GetBeneficiaryByOwnerIdOrTypeDefault("admin", types.BfAlipayFace)
+	pObj := obj.BeneficiaryObj{}
+	util.StructCopy(pObj, bf)
+
+	orderEn.BfObj = pObj // 支付数据
+
+	for _, v := range items {
+		orderEn.OriginalAmount += v.OriginalAmount
+		orderEn.Amount += v.Amount
 	}
 
-	pg, _ := factory.Instance.PayAggregateInstance()
-	if payUrl, err := pg.Pay(orderId, orderEn.Amount); err != nil {
-		return constants.EmptyStr, err
+	// 创建临时订单
+	if _, err := o.orderTempRepo.SaveOrder(&orderEn); err != nil {
+		return orderId, orderEn.Amount, err
 	} else {
-		return payUrl, nil
+		return orderId, orderEn.Amount, nil
 	}
+
 }
 
 // SaveOrder 创建订单
@@ -135,62 +123,46 @@ func (o *OrderAggregate) Cancel(orderId string) error {
 	return nil
 }
 
-func (o *OrderAggregate) buildOrderItem(payType types.BeneficiaryType, commodityId string, num int) (obj.OrderItemObj, error) {
+func (o *OrderAggregate) BuildOrderItem(m map[string]int, commodityEns []*entity.CommodityEn) ([]obj.OrderItemObj, error) {
+	objs := make([]obj.OrderItemObj, 0)
+	for _, v := range commodityEns {
+		if obj, err := o.buildOrderItem(v, m[v.Id]); err != nil {
+			return objs, err
+		} else {
+			objs = append(objs, obj)
+		}
+	}
+	return objs, nil
+}
+
+func (o *OrderAggregate) buildOrderItem(commodityEn *entity.CommodityEn, num int) (obj.OrderItemObj, error) {
 	var (
 		item obj.OrderItemObj
 	)
 	// 商品聚合
-	// 确认商品是否存在,取其金额
-	if cg, err := factory.Instance.CommodityAggregateInstance(commodityId); err != nil {
-		return item, err
-	} else {
-		item.CommodityId = cg.CommodityEn.Id
-		item.Amount = cg.CommodityEn.Amount * float64(num)
-		item.CommodityName = cg.CommodityEn.Name
-		item.OriginalAmount = cg.CommodityEn.Amount * float64(num) // 原金额 TOTO 可加优惠策略
-		item.OwnerId = cg.CommodityEn.OwnerId
-		// 配置收款信息
-		if bf, err := o.beneficiaryRepo.GetBeneficiaryByOwnerIdAndType(cg.CommodityEn.OwnerId, payType); err != nil {
-			return item, err
-		} else {
-			pObj := obj.BeneficiaryObj{}
-			util.StructCopy(pObj, bf)
-			item.Payment = pObj
-		}
-		return item, nil
-	}
+	item.CommodityId = commodityEn.Id
+	item.Amount = commodityEn.Amount * float64(num)
+	item.CommodityName = commodityEn.Name
+	item.OriginalAmount = commodityEn.Amount * float64(num) // 原金额 TOTO 可加优惠策略
+	item.OwnerId = commodityEn.OwnerId
+	return item, nil
 }
 
 func (o *OrderAggregate) preOutStack(orderId, categoryId string, num int) ([]*entity.StockEn, error) {
 	// 校验库存并出货预锁定
-	if ig, err := factory.Instance.InventoryAggregateInstance(categoryId); err != nil {
-		return nil, err
-	} else {
-		if ig.OutOfStock() {
-			return nil, errors.New("该商品缺货,请联系客服")
-		} else {
-			// 出货,预锁定
-			if es, err := ig.OutStock(orderId, num); err != nil {
-				return nil, err
-			} else {
-				return es, err
-			}
-		}
-	}
-}
-
-func (o *OrderAggregate) orderBuild(item *[]obj.OrderItemObj) (float64, float64) {
-	var (
-		originalAmount float64
-		amount         float64
-	)
-	if item == nil || len(*item) < 1 {
-		log.Logger().Errorf("[orderBuild] 参数异常 %v", *item)
-	} else {
-		for _, v := range *item {
-			originalAmount += v.OriginalAmount
-			amount += v.Amount
-		}
-	}
-	return originalAmount, amount
+	//if ig, err := factory.Instance.InventoryAggregateInstance(categoryId); err != nil {
+	//	return nil, err
+	//} else {
+	//	if ig.OutOfStock() {
+	//		return nil, errors.New("该商品缺货,请联系客服")
+	//	} else {
+	//		// 出货,预锁定
+	//		if es, err := ig.OutStock(orderId, num); err != nil {
+	//			return nil, err
+	//		} else {
+	//			return es, err
+	//		}
+	//	}
+	//}
+	return nil, nil
 }

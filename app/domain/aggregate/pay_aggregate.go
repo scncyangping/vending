@@ -36,7 +36,7 @@ func NewPayAggregate(beneficiaryRepo repo.BeneficiaryRepo) *PayAggregate {
 
 // Pay 生成支付信息
 // 现仅对接支付宝面对面支付
-// 待扩展支付方式 TODO
+// TODO 待扩展支付方式
 func (o *PayAggregate) Pay(orderId string, amount float64) (string, error) {
 	var (
 		face, _ = alipay.NewAlipayFaceToFace("", "", "", "")
