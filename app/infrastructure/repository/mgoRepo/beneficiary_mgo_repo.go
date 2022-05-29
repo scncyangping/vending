@@ -1,6 +1,7 @@
 package mgoRepo
 
 import (
+	"errors"
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/do"
@@ -87,10 +88,37 @@ func (b *BeneficiaryMgoRepository) GetBeneficiaryByOwnerIdAndType(s string, bene
 		err error
 		bfa do.BeneficiaryDo
 	)
-	if err = b.mgo.FindOne(types.B{"ownerId": s, "status": beneficiaryType}, &bfa); err != nil {
-		log.Logger().Error("GetBeneficiaryById Error, %v", err)
+	if err = b.mgo.FindOne(types.B{"ownerId": s, "status": types.BfUse, "type": beneficiaryType}, &bfa); err != nil {
+		log.Logger().Error("GetBeneficiaryByOwnerIdAndType Error, %v", err)
 		return nil, err
 	}
 	return &bfa, nil
 
+}
+
+func (b *BeneficiaryMgoRepository) GetBeneficiaryByOwnerIdOrTypeDefault(s string, beneficiaryType types.BeneficiaryType) (*do.BeneficiaryDo, error) {
+	var (
+		err error
+		bfs []*do.BeneficiaryDo
+		bf  *do.BeneficiaryDo
+	)
+	if err = b.mgo.Find(types.B{"ownerId": s, "status": types.BfUse}, &bfs); err != nil {
+		log.Logger().Error("GetBeneficiaryByOwnerIdOrTypeDefault Error, %v", err)
+		return nil, err
+	} else {
+		if len(bfs) < 1 {
+			return nil, errors.New("收款数据不存在")
+		} else {
+			for _, v := range bfs {
+				if v.Type == beneficiaryType {
+					bf = v
+				}
+			}
+			if bf == nil {
+				return bfs[0], nil
+			} else {
+				return bf, nil
+			}
+		}
+	}
 }

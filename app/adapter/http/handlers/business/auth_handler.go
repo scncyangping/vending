@@ -3,26 +3,25 @@ package business
 import (
 	"github.com/gin-gonic/gin"
 	"vending/app/adapter/http/handlers"
-	"vending/app/application/dto"
-	"vending/app/application/service/impl"
+	"vending/app/application/cqe/cmd"
+	"vending/app/application/service"
 )
 
 type AuthHandler struct {
 	*handlers.Handler
-	userSrv *impl.AuthSrvImp
+	userSrv service.AuthSrv
 }
 
-// NewAuthHandler wire
-func NewAuthHandler(auth *impl.AuthSrvImp) *AuthHandler {
+func NewAuthHandler(srv service.AuthSrv) *AuthHandler {
 	return &AuthHandler{
 		Handler: handlers.NewHandler(),
-		userSrv: auth,
+		userSrv: srv,
 	}
 }
 
 func (h *AuthHandler) Login(ctx *gin.Context) {
 	var (
-		requestBody dto.LoginRe
+		requestBody cmd.LoginCmd
 	)
 	err := ctx.ShouldBind(&requestBody)
 	if err != nil {
@@ -38,7 +37,7 @@ func (h *AuthHandler) Login(ctx *gin.Context) {
 
 func (h *AuthHandler) Register(ctx *gin.Context) {
 	var (
-		re dto.RegisterRe
+		re cmd.RegisterCmd
 	)
 	err := ctx.ShouldBind(&re)
 	if err != nil {

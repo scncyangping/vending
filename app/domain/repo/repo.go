@@ -79,6 +79,7 @@ type BeneficiaryRepo interface {
 	DeleteBeneficiary(string) error
 	GetBeneficiaryById(string) (*do.BeneficiaryDo, error)
 	GetBeneficiaryByOwnerIdAndType(string, types.BeneficiaryType) (*do.BeneficiaryDo, error)
+	GetBeneficiaryByOwnerIdOrTypeDefault(s string, beneficiaryType types.BeneficiaryType) (*do.BeneficiaryDo, error) // 根据ownerId及type查询，若对应type不存在,返回任意其他类型支付方式
 	ListBeneficiaryBy(types.B) ([]*do.BeneficiaryDo, error)
 	ListBeneficiaryPageBy(skip, limit int64, sort, filter any) ([]*do.BeneficiaryDo, error)
 }

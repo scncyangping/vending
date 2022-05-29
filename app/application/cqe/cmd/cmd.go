@@ -49,9 +49,10 @@ type StockSaveCmd struct {
 	CategoryId string `json:"categoryId"` // 关联类别Id
 }
 
+//	CommodityId string `json:"commodityId"` // 商品Id
+//	Num         int    `json:"num"`         // 购买数量
 type CreateOrderCmd struct {
-	CommodityId string                `json:"commodityId"` // 商品Id
-	Num         int                   `json:"num"`         // 购买数量
-	PayDes      obj.PayDesObj         `json:"PayDes"`      // 额外信息
-	PayType     types.BeneficiaryType `json:"payType"`     // 支付类型
+	Items   map[string]int        `json:"items"`   // 商品Id -> 数量
+	PayDes  obj.PayDesObj         `json:"PayDes"`  // 额外信息
+	PayType types.BeneficiaryType `json:"payType"` // 支付类型
 }
