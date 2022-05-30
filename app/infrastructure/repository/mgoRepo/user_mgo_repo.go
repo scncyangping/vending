@@ -25,7 +25,7 @@ func (u *UserMgoRepository) SaveUser(entity *entity.UserEn) (string, error) {
 	return u.mgo.InsertOne(userDo)
 }
 
-func (u *UserMgoRepository) UpdateUser(filter types.B, update types.B) error {
+func (u *UserMgoRepository) UpdateUser(filter any, update any) error {
 	if _, err := u.mgo.Update(filter, update); err != nil {
 		log.Logger().Error("UpdateUser Error, %v", err)
 		return err
@@ -63,7 +63,7 @@ func (u *UserMgoRepository) GetUserById(s string) (*do.UserDo, error) {
 	return &users, nil
 }
 
-func (u *UserMgoRepository) ListUserBy(m map[string]any) ([]*do.UserDo, error) {
+func (u *UserMgoRepository) ListUserBy(m any) ([]*do.UserDo, error) {
 	var (
 		err   error
 		users []*do.UserDo

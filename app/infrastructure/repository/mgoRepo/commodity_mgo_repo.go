@@ -27,7 +27,7 @@ func (c *CommodityMgoRepository) SaveCommodity(entity *entity.CommodityEn, Categ
 	return c.mgo.InsertOne(commodityDo)
 }
 
-func (c *CommodityMgoRepository) UpdateCommodity(filter types.B, update types.B) error {
+func (c *CommodityMgoRepository) UpdateCommodity(filter any, update any) error {
 	if _, err := c.mgo.Update(filter, update); err != nil {
 		log.Logger().Error("UpdateCommodity Error, %v", err)
 		return err
@@ -61,7 +61,7 @@ func (c *CommodityMgoRepository) GetCommodityById(s string) (*do.CommodityDo, er
 	return &do, nil
 }
 
-func (c *CommodityMgoRepository) ListCommodityBy(m types.B) ([]*do.CommodityDo, error) {
+func (c *CommodityMgoRepository) ListCommodityBy(m any) ([]*do.CommodityDo, error) {
 	var (
 		err error
 		dos []*do.CommodityDo

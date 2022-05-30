@@ -30,7 +30,7 @@ func (c *CategoryMgoRepository) SaveCategory(entity *entity.CategoryEn) (string,
 	return c.mgo.InsertOne(CategoryDo)
 }
 
-func (c *CategoryMgoRepository) UpdateCategory(filter types.B, update types.B) error {
+func (c *CategoryMgoRepository) UpdateCategory(filter any, update any) error {
 	if _, err := c.mgo.Update(filter, update); err != nil {
 		log.Logger().Error("UpdateCategory Error, %v", err)
 		return err
@@ -78,7 +78,7 @@ func (c *CategoryMgoRepository) GetCategoryById(s string) (*do.CategoryDo, error
 	return &cg, nil
 }
 
-func (c *CategoryMgoRepository) ListCategoryBy(m types.B) ([]*do.CategoryDo, error) {
+func (c *CategoryMgoRepository) ListCategoryBy(m any) ([]*do.CategoryDo, error) {
 	var (
 		err error
 		cgs []*do.CategoryDo

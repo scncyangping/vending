@@ -26,7 +26,7 @@ func (r *RoleMgoRepository) SaveRole(entity *entity.RoleEn) (string, error) {
 	return r.mgo.InsertOne(do)
 }
 
-func (r *RoleMgoRepository) UpdateRole(filter types.B, update types.B) error {
+func (r *RoleMgoRepository) UpdateRole(filter any, update any) error {
 	if _, err := r.mgo.Update(filter, update); err != nil {
 		log.Logger().Error("UpdateRole Error, %v", err)
 		return err
@@ -53,7 +53,7 @@ func (r *RoleMgoRepository) GetRoleById(s string) (*do.RoleDo, error) {
 	return &do, nil
 }
 
-func (r *RoleMgoRepository) ListRoleBy(m types.B) ([]*do.RoleDo, error) {
+func (r *RoleMgoRepository) ListRoleBy(m any) ([]*do.RoleDo, error) {
 	var (
 		err error
 		dos []*do.RoleDo

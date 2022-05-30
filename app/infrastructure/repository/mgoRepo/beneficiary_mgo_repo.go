@@ -31,7 +31,7 @@ func (b *BeneficiaryMgoRepository) SaveBeneficiary(entity *entity.BeneficiaryEn)
 	return b.mgo.InsertOne(beneficiaryDo)
 }
 
-func (b *BeneficiaryMgoRepository) UpdateBeneficiary(q types.B, u types.B) error {
+func (b *BeneficiaryMgoRepository) UpdateBeneficiary(q any, u any) error {
 	if _, err := b.mgo.Update(q, u); err != nil {
 		log.Logger().Error("UpdateBeneficiary Error, %v", err)
 		return err
@@ -59,7 +59,7 @@ func (b *BeneficiaryMgoRepository) GetBeneficiaryById(s string) (*do.Beneficiary
 	return &bfa, nil
 }
 
-func (b *BeneficiaryMgoRepository) ListBeneficiaryBy(m types.B) ([]*do.BeneficiaryDo, error) {
+func (b *BeneficiaryMgoRepository) ListBeneficiaryBy(m any) ([]*do.BeneficiaryDo, error) {
 	var (
 		err error
 		bfs []*do.BeneficiaryDo

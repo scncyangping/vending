@@ -26,7 +26,7 @@ func (o *OrderMgoRepository) SaveOrder(entity *entity.OrderEn) (string, error) {
 	return o.mgo.InsertOne(do)
 }
 
-func (o *OrderMgoRepository) UpdateOrder(filter types.B, update types.B) error {
+func (o *OrderMgoRepository) UpdateOrder(filter any, update any) error {
 	if _, err := o.mgo.Update(filter, update); err != nil {
 		log.Logger().Error("UpdateOrder Error, %v", err)
 		return err
@@ -53,7 +53,7 @@ func (o *OrderMgoRepository) GetOrderById(s string) (*do.OrderDo, error) {
 	return &do, nil
 }
 
-func (o *OrderMgoRepository) ListOrderBy(m types.B) ([]*do.OrderDo, error) {
+func (o *OrderMgoRepository) ListOrderBy(m any) ([]*do.OrderDo, error) {
 	var (
 		err error
 		dos []*do.OrderDo
