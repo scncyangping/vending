@@ -52,7 +52,16 @@ type StockSaveCmd struct {
 //	CommodityId string `json:"commodityId"` // 商品Id
 //	Num         int    `json:"num"`         // 购买数量
 type CreateOrderCmd struct {
-	Items   map[string]int        `json:"items"`   // 商品Id -> 数量
-	PayDes  obj.PayDesObj         `json:"PayDes"`  // 额外信息
-	PayType types.BeneficiaryType `json:"payType"` // 支付类型
+	Items        map[string]int        `json:"items"`   // 商品Id -> 数量
+	PayDes       obj.PayDesObj         `json:"PayDes"`  // 额外信息
+	PayType      types.BeneficiaryType `json:"payType"` // 支付类型
+	CommodityIds []string              // 预构建商品ID
+}
+
+func (c *CreateOrderCmd) GetCommodityIds() []string {
+	commodityIds := make([]string, 0)
+	for key, _ := range c.Items {
+		commodityIds = append(commodityIds, key)
+	}
+	return commodityIds
 }

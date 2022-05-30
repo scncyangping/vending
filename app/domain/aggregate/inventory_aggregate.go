@@ -6,7 +6,6 @@ import (
 	"vending/app/domain/entity"
 	"vending/app/domain/repo"
 	"vending/app/infrastructure/pkg/util"
-	"vending/app/infrastructure/pkg/util/snowflake"
 	"vending/app/types"
 	"vending/app/types/constants"
 )
@@ -122,20 +121,6 @@ func (c *InventoryAggregate) InStockOne(dto *cmd.StockSaveCmd) (string, error) {
 	return c.stockRepo.SaveStock(&en)
 }
 
-// RemoveCategoryByIds 批量移除分类
-func (c *InventoryAggregate) RemoveCategoryByIds(ids []string) error {
-	// 查询分类下是否有库存数据，若有，不允许移除
-	if l, err := c.stockRepo.ListStockBy(
-		types.B{"categoryId": types.B{"$in": ids}, "Status": types.StockNormal}); err != nil {
-		return err
-	} else {
-		if len(l) > 0 {
-			return errors.New("该分类下存在未使用库存,不允许删除")
-		}
-	}
-	return c.categoryRepo.DeleteCategoryByIds(ids)
-}
-
 // UpdateCategory 修改分类基本信息
 func (c *InventoryAggregate) UpdateCategory(req *cmd.CategoryUpdateCmd) error {
 	// 查询对应分类是否存在
@@ -156,28 +141,6 @@ func (c *InventoryAggregate) UpdateCategory(req *cmd.CategoryUpdateCmd) error {
 	}
 
 	return c.categoryRepo.UpdateCategory(types.B{"_id": req.CategoryId}, types.B{"$set": m})
-}
-
-// SaveCategory 添加分类
-func (c *InventoryAggregate) SaveCategory(req *cmd.CategorySaveCmd) (string, error) {
-	var (
-		err        error
-		categoryEn entity.CategoryEn
-	)
-	// 查询对应分类是否存在
-	if c.existCategoryByName(req.Name) {
-		return constants.EmptyStr, errors.New("该分类已存在")
-	}
-
-	categoryEn.Name = req.Name
-	categoryEn.PId = req.PId
-	categoryEn.SellType = req.SellType
-	categoryEn.Id = snowflake.NextId()
-
-	if _, err = c.categoryRepo.SaveCategory(&categoryEn); err != nil {
-		return constants.EmptyStr, err
-	}
-	return categoryEn.Id, nil
 }
 
 // stockNum 分类统计库存数量修改

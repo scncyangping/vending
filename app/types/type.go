@@ -102,3 +102,10 @@ var SellTypeM = map[SellType]string{
 	Once:   "一次性",
 	Repeat: "可重复使用",
 }
+
+type SortByType int8
+
+const (
+	Asc  SortByType = 1
+	Desc SortByType = -1
+)

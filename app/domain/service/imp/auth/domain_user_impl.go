@@ -11,20 +11,24 @@ import (
 )
 
 type UserServiceImpl struct {
-	UserRepo repo.UserRepo
+	userRepo repo.UserRepo
+}
+
+func NewUserServiceImpl(userRepo repo.UserRepo) *UserServiceImpl {
+	return &UserServiceImpl{userRepo: userRepo}
 }
 
 // Register 注册用户
 func (a *UserServiceImpl) Register(rr *entity.UserEn) (string, error) {
 	// 校验用户是否存在 是否有其他关联条件
-	if userDo, err := a.UserRepo.GetUserByName(rr.Name); err != nil {
+	if userDo, err := a.userRepo.GetUserByName(rr.Name); err != nil {
 		return constants.EmptyStr, err
 	} else {
 		if userDo != nil {
 			return constants.EmptyStr, errors.New("user is exist")
 		}
 	}
-	return a.UserRepo.SaveUser(rr)
+	return a.userRepo.SaveUser(rr)
 }
 
 func (a *UserServiceImpl) LoginByName(name, pwd string) (*vo.UserVo, error) {
@@ -32,7 +36,7 @@ func (a *UserServiceImpl) LoginByName(name, pwd string) (*vo.UserVo, error) {
 		rp vo.UserVo
 	)
 	// 查询数据
-	if userDo, err := a.UserRepo.GetUserByName(name); err != nil {
+	if userDo, err := a.userRepo.GetUserByName(name); err != nil {
 		return nil, err
 	} else {
 		if userDo == nil {

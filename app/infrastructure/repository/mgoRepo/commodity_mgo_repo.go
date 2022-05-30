@@ -61,7 +61,7 @@ func (c *CommodityMgoRepository) GetCommodityById(s string) (*do.CommodityDo, er
 	return &do, nil
 }
 
-func (c *CommodityMgoRepository) ListCommodityBy(m any) ([]*do.CommodityDo, error) {
+func (c *CommodityMgoRepository) listCommodityBy(m any) ([]*do.CommodityDo, error) {
 	var (
 		err error
 		dos []*do.CommodityDo
@@ -71,6 +71,14 @@ func (c *CommodityMgoRepository) ListCommodityBy(m any) ([]*do.CommodityDo, erro
 		return nil, err
 	}
 	return dos, nil
+}
+
+func (c *CommodityMgoRepository) ListCommodityByIds(ids []string) ([]*do.CommodityDo, error) {
+	if l, err := c.listCommodityBy(types.B{"_id": types.B{"$in": ids}}); err != nil {
+		return nil, err
+	} else {
+		return l, nil
+	}
 }
 
 func (c *CommodityMgoRepository) ListCommodityPageBy(skip, limit int64, sort, filter any) ([]*do.CommodityDo, error) {

@@ -65,6 +65,14 @@ func (s *StockMgoRepository) ListStockBy(m any) ([]*do.StockDo, error) {
 	return dos, nil
 }
 
+func (s *StockMgoRepository) ListStockByIdsAndStatus(ids []string, status types.StockStatus) ([]*do.StockDo, error) {
+	if l, err := s.ListStockBy(types.B{"categoryId": types.B{"$in": ids}, "Status": status}); err != nil {
+		return l, err
+	} else {
+		return l, nil
+	}
+}
+
 func (s *StockMgoRepository) ListStockPageBy(skip, limit int64, sort, filter any) ([]*do.StockDo, error) {
 	var (
 		err error

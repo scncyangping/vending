@@ -21,7 +21,8 @@ import (
 func NewHandler() *server.Handlers {
 	repositoryRepository := repository.NewRepository()
 	serviceService := service.NewService(repositoryRepository)
-	appSrvManager := service2.NewAppSrvManager(serviceService)
+	agFactory := factory.NewAggregate(repositoryRepository)
+	appSrvManager := service2.NewAppSrvManager(serviceService, agFactory)
 	handlers := server.NewHandlers(appSrvManager)
 	return handlers
 }

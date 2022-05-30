@@ -5,6 +5,7 @@ import (
 	"vending/app/application/cqe/query"
 	"vending/app/application/dto"
 	"vending/app/application/service/impl"
+	"vending/app/domain/aggregate/factory"
 	"vending/app/domain/service"
 )
 
@@ -57,8 +58,10 @@ type OrderSrv interface {
 	OrderCallBack(string) error
 	// Cancel 取消订单
 	Cancel(string) error
-	// Get 获取订单详情
-	Get(string) (*dto.OrderDto, error)
+	// GetTempOrderById 获取订单详情
+	GetTempOrderById(string) (*dto.OrderDto, error)
+	// GetOrderById 获取订单
+	GetOrderById(string) (*dto.OrderDto, error)
 	// Query 获取订单列表
 	Query(query.OrderPageQuery) ([]*dto.OrderListDto, error)
 }
@@ -71,11 +74,13 @@ type AppSrvManager struct {
 }
 
 // NewAppSrvManager wire
-func NewAppSrvManager(srv *service.Service) *AppSrvManager {
+func NewAppSrvManager(srv *service.Service, factory *factory.AgFactory) *AppSrvManager {
 	return &AppSrvManager{
 		AuthSrv:      impl.NewAuthSrvImp(srv.UserSrv),
-		CommoditySrv: impl.NewCommoditySrvImp(),
-		InventorySrv: impl.NewInventorySrvImp(),
-		OrderSrv:     impl.NewOrderSrvImp(),
+		CommoditySrv: impl.NewCommoditySrvImp(factory, srv.DoCommoditySrv),
+		InventorySrv: impl.NewInventorySrvImp(factory, srv.DoInventorySrv),
+		OrderSrv: impl.NewOrderSrvImp(
+			factory, srv.DoCommoditySrv,
+			srv.DoInventorySrv, srv.DoOrderSrv),
 	}
 }
