@@ -6,6 +6,7 @@ package main
 
 import (
 	"github.com/google/wire"
+	"vending/app/adapter/http/handlers"
 	"vending/app/adapter/http/server"
 	service2 "vending/app/application/service"
 	"vending/app/domain/aggregate/factory"
@@ -20,6 +21,7 @@ var providerSet = wire.NewSet(
 	factory.NewAggregate,
 	service.NewService,
 	service2.NewAppSrvManager,
+	handlers.NewHandler,
 	server.NewHandlers,
 )
 
