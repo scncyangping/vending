@@ -12,9 +12,9 @@ type AuthHandler struct {
 	userSrv service.AuthSrv
 }
 
-func NewAuthHandler(srv service.AuthSrv) *AuthHandler {
+func NewAuthHandler(handler *handlers.Handler, srv service.AuthSrv) *AuthHandler {
 	return &AuthHandler{
-		Handler: handlers.NewHandler(),
+		Handler: handler,
 		userSrv: srv,
 	}
 }
