@@ -1,4 +1,4 @@
-package identity
+package routers
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,9 +6,8 @@ import (
 	"vending/app/adapter/http/handlers/business"
 )
 
-func InitAuthRoute(router *gin.RouterGroup, handler *business.AuthHandler) {
-	authRouter := router.Group("/base")
-	auth(authRouter, handler)
+func initAuthRoute(router *gin.RouterGroup, handler *business.AuthHandler) {
+	auth(router, handler)
 	// 鉴权中间件
 	router.Use(handler.TokenAuthMiddleware())
 	userRouter := router.Group("/user")

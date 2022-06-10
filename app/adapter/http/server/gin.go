@@ -19,6 +19,8 @@ import (
 type Handlers struct {
 	AuthHandler      *business.AuthHandler
 	CommodityHandler *business.CommodityHandler
+	InventoryHandler *business.InventoryHandler
+	OrderHandler     *business.OrderHandler
 }
 
 // NewHandlers wire
@@ -26,6 +28,8 @@ func NewHandlers(handler *handlers.Handler, srvM *service.AppSrvManager) *Handle
 	return &Handlers{
 		AuthHandler:      business.NewAuthHandler(handler, srvM.AuthSrv),
 		CommodityHandler: business.NewCommodityHandler(handler, srvM.CommoditySrv),
+		InventoryHandler: business.NewInventoryHandler(handler, srvM.InventorySrv),
+		OrderHandler:     business.NewOrderHandler(handler, srvM.OrderSrv),
 	}
 }
 
