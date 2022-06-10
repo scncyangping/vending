@@ -50,9 +50,7 @@ func IsExpectType(i any) int {
 	}
 }
 
-/**
- * 判断obj是否在target中，target支持的类型array,slice,map
- */
+// Contains 判断obj是否在target中，target支持的类型array,slice,map
 func Contains(obj any, target any) bool {
 	if target == nil {
 		return false
@@ -74,9 +72,6 @@ func Contains(obj any, target any) bool {
 	return false
 }
 
-/**
- * 深度拷贝
- */
 func DeepCopy(value any) any {
 	if valueMap, ok := value.(map[string]any); ok {
 		newMap := make(map[string]any)
@@ -101,11 +96,6 @@ func DeepCopy(value any) any {
 	return value
 }
 
-/**
- * 组装需要使用的参数,过滤不需要的字段
- * @param   data 	原数据
- * @param field   使用字段
- */
 func FiltrationData(data map[string]any, field []string) map[string]any {
 	resultMap := make(map[string]any)
 	if data == nil || field == nil || len(data) < 1 || len(field) < 1 {

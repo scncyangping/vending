@@ -9,6 +9,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"vending/app/adapter/http/handlers"
 	"vending/app/adapter/http/handlers/business"
 	"vending/app/application/service"
 	"vending/app/infrastructure/config"
@@ -16,13 +17,15 @@ import (
 )
 
 type Handlers struct {
-	AuthHandler *business.AuthHandler
+	AuthHandler      *business.AuthHandler
+	CommodityHandler *business.CommodityHandler
 }
 
 // NewHandlers wire
-func NewHandlers(srvM *service.AppSrvManager) *Handlers {
+func NewHandlers(handler *handlers.Handler, srvM *service.AppSrvManager) *Handlers {
 	return &Handlers{
-		AuthHandler: business.NewAuthHandler(srvM.AuthSrv),
+		AuthHandler:      business.NewAuthHandler(handler, srvM.AuthSrv),
+		CommodityHandler: business.NewCommodityHandler(handler, srvM.CommoditySrv),
 	}
 }
 
