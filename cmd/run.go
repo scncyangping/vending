@@ -12,6 +12,7 @@ func run(mode string) {
 }
 
 func main() {
+	// 启动配置可删除
 	config.NewConfig()
 	h := NewHandler()
 
