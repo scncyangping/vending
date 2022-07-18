@@ -6,6 +6,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"time"
+	"vending/app/infrastructure/pkg/util"
 	"vending/app/types"
 )
 
@@ -129,6 +130,7 @@ func (m *MgoV) DeleteOne(filter any) (int64, error) {
 // Update 更新文档
 func (m *MgoV) Update(filter, update any) (int64, error) {
 	collection := getCollection(m)
+	addUpdateFilter(update)
 	if result, err := collection.UpdateMany(context.TODO(), filter, update); err != nil {
 		return -1, err
 	} else {
@@ -158,6 +160,12 @@ func (m *MgoV) FindOne(b any, target any) error {
 		err = singleResult.Decode(target)
 	}
 	return err
+}
+
+func addUpdateFilter(b any) {
+	if _, ok := b.(types.B)["updateTime"]; !ok {
+		b.(types.B)["updateTime"] = util.NowTimestamp()
+	}
 }
 
 func addIsDelFilter(b any) {
