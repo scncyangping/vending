@@ -36,18 +36,18 @@ type StockDto struct {
 
 type OrderDto struct {
 	BaseDto
-	OriginalAmount float64            `json:"originalAmount" bson:"originalAmount"` // 总商品原金额
-	Amount         float64            `json:"amount" bson:"amount"`                 // 总商品折扣金额
-	Items          []obj.OrderItemObj `json:"items" bson:"items"`                   // 订单明细
-	Payment        obj.PayDesObj      `json:"payment" bson:"payment"`               // 支付信息
-	OrderStatus    types.OrderStatus  `json:"orderStatus" bson:"orderStatus"`       // 订单状态 开始、待支付、完成
-	BfDto          obj.BeneficiaryObj `json:"bf" bson:"bf"`                         // 支付关联信息
+	OriginalAmount float64            `json:"originalAmount"` // 总商品原金额
+	Amount         float64            `json:"amount"`         // 总商品折扣金额
+	Items          []obj.OrderItemObj `json:"items"`          // 订单明细
+	Payment        obj.PayDesObj      `json:"payment"`        // 支付信息
+	OrderStatus    types.OrderStatus  `json:"orderStatus"`    // 订单状态 开始、待支付、完成
+	BfDto          obj.BeneficiaryObj `json:"bf"`             // 支付关联信息
 }
 
 type OrderListDto struct {
 	BaseDto
-	Amount      float64           `json:"amount" bson:"amount"`           // 总商品折扣金额
-	OrderStatus types.OrderStatus `json:"orderStatus" bson:"orderStatus"` // 订单状态 开始、待支付、完成
+	Amount      float64           `json:"amount"`      // 总商品折扣金额
+	OrderStatus types.OrderStatus `json:"orderStatus"` // 订单状态 开始、待支付、完成
 }
 
 type LoginDto struct {
